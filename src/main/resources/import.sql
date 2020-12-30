@@ -8,9 +8,9 @@ insert into restaurante (nome, taxa_frete, cozinha_id) values ('Hoje tem Curry!'
 insert into restaurante (nome, taxa_frete, cozinha_id) values ('Taj Mahal', 10.0, 2);
 
 #Estado
-insert into estado (nome) values ('RJ')
-insert into estado (nome) values ('SP')
-insert into estado (nome) values ('MG')
+insert into estado (nome) values ('Rio de Janeiro')
+insert into estado (nome) values ('São Paulo')
+insert into estado (nome) values ('Minas Gerais')
 
 #Cidade
 insert into cidade (nome, estado_id) values ('Petrópolis', 1);
