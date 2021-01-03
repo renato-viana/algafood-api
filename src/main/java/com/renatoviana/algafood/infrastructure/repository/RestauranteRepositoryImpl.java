@@ -1,49 +1,56 @@
 package com.renatoviana.algafood.infrastructure.repository;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import com.renatoviana.algafood.domain.model.Restaurante;
-import com.renatoviana.algafood.domain.repository.RestauranteRepository;
+import com.renatoviana.algafood.domain.repository.RestauranteRepositoryQueries;
 
-@Component
-public class RestauranteRepositoryImpl implements RestauranteRepository {
+@Repository
+public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
 	@PersistenceContext
 	private EntityManager manager;
 
 	@Override
-	public List<Restaurante> listar() {
-		return manager.createQuery("from Restaurante", Restaurante.class)
-				.getResultList();
-	}
+	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial,
+			BigDecimal taxaFreteFinal) {
 
-	@Override
-	public Restaurante buscar(Long id) {
-		return manager.find(Restaurante.class, id);
-	}
+		var jpql = new StringBuilder();
+		jpql.append("from Restaurante where 0 = 0 ");
 
-	@Transactional
-	@Override
-	public Restaurante salvar(Restaurante restaurante) {
-		return manager.merge(restaurante);
-	}
+		var parametros = new HashMap<String, Object>();
 
-	@Transactional
-	@Override
-	public void remover(Long id) {
-		Restaurante restaurante = buscar(id);
+		if (StringUtils.hasLength(nome)) {
+			jpql.append("and nome like :nome ");
+			parametros.put("nome", "%" + nome + "%");
+		}
 
-		if (restaurante == null)
-			throw new EmptyResultDataAccessException(1);
-		
-		manager.remove(restaurante);
+		if (taxaFreteInicial != null) {
+			jpql.append("and taxaFrete >= :taxaInicial ");
+			parametros.put("taxaInicial", taxaFreteInicial);
+
+		}
+
+		if (taxaFreteFinal != null) {
+			jpql.append("and taxaFrete <= :taxaFinal ");
+			parametros.put("taxaFinal", taxaFreteFinal);
+		}
+
+		TypedQuery<Restaurante> query = manager.createQuery(jpql.toString(),
+				Restaurante.class);
+
+		parametros.forEach((chave, valor) -> query.setParameter(chave, valor));
+
+		return query.getResultList();
 	}
 
 }

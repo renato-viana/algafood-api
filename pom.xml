@@ -15,6 +15,10 @@
 	<name>algafood-api</name>
 	<description>API de delivery de comida</description>
 
+	<properties>
+		<java.version>11</java.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -67,11 +71,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<source>11</source>
-					<target>11</target>
-					<verbose>true</verbose>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
