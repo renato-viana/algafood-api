@@ -4,7 +4,7 @@ insert into cozinha (id, nome) values (2, 'Indiana');
 
 #Restarurante
 insert into restaurante (nome, taxa_frete, cozinha_id) values ('Nam Thai', 12.0, 1);
-insert into restaurante (nome, taxa_frete, cozinha_id) values ('Hoje tem Curry!', 8.0, 1);
+insert into restaurante (nome, taxa_frete, cozinha_id) values ('Hoje tem Curry!', 0.0, 1);
 insert into restaurante (nome, taxa_frete, cozinha_id) values ('Taj Mahal', 10.0, 2);
 
 #Estado
