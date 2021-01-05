@@ -14,8 +14,6 @@ import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.CozinhaRepository;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
-import com.renatoviana.algafood.infrastructure.repository.spec.RestauranteComFreteGratisEspec;
-import com.renatoviana.algafood.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 
 @RestController
 @RequestMapping("/teste")
@@ -40,6 +38,11 @@ public class TesteController {
 	@GetMapping("/cozinhas/exists")
 	public boolean cozinhaExists(String nome) {
 		return cozinhaRepository.existsByNome(nome);
+	}
+
+	@GetMapping("/cozinhas/primeiro")
+	public Optional<Cozinha> cozinhaPrimeiro() {
+		return cozinhaRepository.buscarPrimeiro();
 	}
 
 	@GetMapping("/restaurantes/por-taxa-frete")
@@ -79,10 +82,11 @@ public class TesteController {
 
 	@GetMapping("/restaurantes/com-frete-gratis")
 	public List<Restaurante> restaurantesComFreteGratis(String nome) {
-		var comFreteGratis = new RestauranteComFreteGratisEspec();
-		var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
+		return restauranteRepository.findComFreteGratis(nome);
+	}
 
-		return restauranteRepository
-				.findAll(comFreteGratis.and(comNomeSemelhante));
+	@GetMapping("/retaurantes/primeiro")
+	public Optional<Restaurante> restaurantePrimeiro() {
+		return restauranteRepository.buscarPrimeiro();
 	}
 }
