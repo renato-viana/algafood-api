@@ -89,9 +89,7 @@ public class CozinhaController {
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public ResponseEntity<?> remover(@PathVariable Long id) {
+	public void remover(@PathVariable Long id) {
 		cadastroCozinhaService.excluir(id);
-		return ResponseEntity.noContent().build();
 	}
-
 }
