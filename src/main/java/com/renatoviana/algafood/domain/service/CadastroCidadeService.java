@@ -32,21 +32,21 @@ public class CadastroCidadeService {
 		return cidadeRepository.save(cidade);
 	}
 
-	public void excluir(Long id) {
+	public void excluir(Long cidadeId) {
 		try {
 
-			cidadeRepository.deleteById(id);
+			cidadeRepository.deleteById(cidadeId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new CidadeNaoEncontradaException(id);
+			throw new CidadeNaoEncontradaException(cidadeId);
 
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format(MSG_CIDADE_EM_USO, id));
+					String.format(MSG_CIDADE_EM_USO, cidadeId));
 		}
 	}
 
-	public Cidade buscarOuFalhar(Long id) {
-		return cidadeRepository.findById(id)
-				.orElseThrow(() -> new CidadeNaoEncontradaException(id));
+	public Cidade buscarOuFalhar(Long cidadeId) {
+		return cidadeRepository.findById(cidadeId)
+				.orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
 	}
 }

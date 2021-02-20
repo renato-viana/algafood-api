@@ -32,21 +32,21 @@ public class CadastroRestauranteService {
 		return restauranteRepository.save(restaurante);
 	}
 
-	public void excluir(Long id) {
+	public void excluir(Long restauranteId) {
 		try {
 
-			restauranteRepository.deleteById(id);
+			restauranteRepository.deleteById(restauranteId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new RestauranteNaoEncontradoException(id);
+			throw new RestauranteNaoEncontradoException(restauranteId);
 
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format(MSG_RESTAURANTE_EM_USO, id));
+					String.format(MSG_RESTAURANTE_EM_USO, restauranteId));
 		}
 	}
 
-	public Restaurante buscarOuFalhar(Long id) {
-		return restauranteRepository.findById(id)
-				.orElseThrow(() -> new RestauranteNaoEncontradoException(id));
+	public Restaurante buscarOuFalhar(Long restauranteId) {
+		return restauranteRepository.findById(restauranteId)
+				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 }

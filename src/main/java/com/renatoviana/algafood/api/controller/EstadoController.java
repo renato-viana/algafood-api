@@ -36,9 +36,9 @@ public class EstadoController {
 		return estadoRepository.findAll();
 	}
 
-	@GetMapping("/{id}")
-	public Estado buscar(@PathVariable Long id) {
-		return cadastroEstadoService.buscarOuFalhar(id);
+	@GetMapping("/{estadoId}")
+	public Estado buscar(@PathVariable Long estadoId) {
+		return cadastroEstadoService.buscarOuFalhar(estadoId);
 	}
 
 	@PostMapping
@@ -54,19 +54,19 @@ public class EstadoController {
 		}
 	}
 
-	@PutMapping("/{id}")
-	public Estado atualizar(@PathVariable Long id, @RequestBody Estado estado) {
+	@PutMapping("/{estadoId}")
+	public Estado atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
 
-		Estado estadoAtual = cadastroEstadoService.buscarOuFalhar(id);
+		Estado estadoAtual = cadastroEstadoService.buscarOuFalhar(estadoId);
 
-		BeanUtils.copyProperties(estado, estadoAtual, "id");
+		BeanUtils.copyProperties(estado, estadoAtual, "estadoId");
 
 		return cadastroEstadoService.salvar(estadoAtual);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{estadoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long id) {
-		cadastroEstadoService.excluir(id);
+	public void remover(@PathVariable Long estadoId) {
+		cadastroEstadoService.excluir(estadoId);
 	}
 }

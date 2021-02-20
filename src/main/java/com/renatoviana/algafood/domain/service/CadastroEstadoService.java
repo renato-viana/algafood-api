@@ -22,21 +22,21 @@ public class CadastroEstadoService {
 		return estadoRepository.save(estado);
 	}
 
-	public void excluir(Long id) {
+	public void excluir(Long estadoId) {
 		try {
 
-			estadoRepository.deleteById(id);
+			estadoRepository.deleteById(estadoId);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EstadoNaoEncontradoException(id);
+			throw new EstadoNaoEncontradoException(estadoId);
 
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format(MSG_ESTADO_EM_USO, id));
+					String.format(MSG_ESTADO_EM_USO, estadoId));
 		}
 	}
 
-	public Estado buscarOuFalhar(Long id) {
-		return estadoRepository.findById(id)
-				.orElseThrow(() -> new EstadoNaoEncontradoException(id));
+	public Estado buscarOuFalhar(Long estadoId) {
+		return estadoRepository.findById(estadoId)
+				.orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
 	}
 }
