@@ -1,5 +1,6 @@
 package com.renatoviana.algafood.api.exceptionhandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,11 @@ import com.renatoviana.algafood.domain.exception.NegocioException;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private static final String MSG_ERRO_GENERICA_USUARIO_FINAL 
+		= "Ocorreu um erro interno inesperado no sistema. "
+	        + "Tente novamente e se o problema persistir, entre em contato "
+	        + "com o administrador do sistema.";
+
 	// 1. MethodArgumentTypeMismatchException é um subtipo de
 	// TypeMismatchException
 
@@ -42,6 +48,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	// 5. Poderíamos fazer tudo dentro de handleTypeMismatch, mas preferi
 	// separar em outro método
 	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+	    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;		
+	    ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
+	    String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
+
+	    // Importante colocar o printStackTrace (pelo menos por enquanto, que não estamos
+	    // fazendo logging) para mostrar a stacktrace no console
+	    // Se não fizer isso, você não vai ver a stacktrace de exceptions que seriam importantes
+	    // para você durante, especialmente na fase de desenvolvimento
+	    ex.printStackTrace();
+	    
+	    Problem problem = createProblemBuilder(status, problemType, detail)
+	    		.userMessage(detail)
+	    		.build();
+
+	    return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}   
+	
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, 
 	        HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -50,7 +75,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	    String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.", 
 	            ex.getRequestURL());
 	    
-	    Problem problem = createProblemBuilder(status, problemType, detail).build();
+	    Problem problem = createProblemBuilder(status, problemType, detail)
+	    		.userMessage(detail)
+	    		.build();
 	    
 	    return handleExceptionInternal(ex, problem, headers, status, request);
 	}           
@@ -82,6 +109,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.getRequiredType().getSimpleName());
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
@@ -105,6 +133,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
@@ -114,9 +143,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			PropertyBindingException ex, HttpHeaders headers, HttpStatus status,
 			WebRequest request) {
 
-		// Criei o método joinPath para reaproveitar em todos os métodos que
-		// precisam
-		// concatenar os nomes das propriedades (separando por ".")
 		String path = joinPath(ex.getPath());
 
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
@@ -125,6 +151,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				path);
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 				.build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
@@ -143,6 +170,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				path, ex.getValue(), ex.getTargetType().getSimpleName());
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 				.build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
@@ -157,6 +185,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = ex.getMessage();
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status,
@@ -172,6 +201,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = ex.getMessage();
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status,
@@ -187,6 +217,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = ex.getMessage();
 
 		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
 				.build();
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status,
@@ -199,10 +230,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			WebRequest request) {
 
 		if (body == null) {
-			body = Problem.builder().title(status.getReasonPhrase())
-					.status(status.value()).build();
+			body = Problem.builder()
+					.timestamp(LocalDateTime.now())
+					.title(status.getReasonPhrase())
+					.status(status.value())
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+					.build();
 		} else if (body instanceof String) {
-			body = Problem.builder().title((String) body).status(status.value())
+			body = Problem.builder()
+					.timestamp(LocalDateTime.now())
+					.title((String) body)
+					.status(status.value())
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 					.build();
 		}
 
@@ -213,8 +252,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status,
 			ProblemType problemType, String detail) {
 
-		return Problem.builder().status(status.value())
-				.type(problemType.getUri()).title(problemType.getTitle())
+		return Problem.builder()
+				.timestamp(LocalDateTime.now())
+				.status(status.value())
+				.type(problemType.getUri())
+				.title(problemType.getTitle())
 				.detail(detail);
 	}
 
