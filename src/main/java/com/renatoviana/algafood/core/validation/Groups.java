@@ -1,4 +1,4 @@
-package com.renatoviana.algafood;
+package com.renatoviana.algafood.core.validation;
 
 public interface Groups {
 
