@@ -21,7 +21,7 @@ import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
-class CadastroCozinhaIT {
+public class CadastroCozinhaIT {
 	
 	private static final int COZINHA_ID_INEXISTENTE = 100;
 
