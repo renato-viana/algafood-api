@@ -61,7 +61,7 @@ public class EstadoController {
 
 		Estado estadoAtual = cadastroEstadoService.buscarOuFalhar(estadoId);
 
-		BeanUtils.copyProperties(estado, estadoAtual, "estadoId");
+		BeanUtils.copyProperties(estado, estadoAtual, "id");
 
 		return cadastroEstadoService.salvar(estadoAtual);
 	}

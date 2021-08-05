@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.renatoviana.algafood.core.validation.ValidacaoException;
+import com.renatoviana.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
 import com.renatoviana.algafood.domain.model.Restaurante;
@@ -45,7 +46,7 @@ public class RestauranteController {
 
 	@Autowired
 	private CadastroRestauranteService cadastroRestauranteService;
-	
+
 	@Autowired
 	private SmartValidator validator;
 
@@ -71,15 +72,14 @@ public class RestauranteController {
 
 	@PutMapping("/{restauranteId}")
 	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody @Valid Restaurante restaurante) {
-
-		Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
-
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "restauranteId", "formasPagamento", "endereco",
-				"dataCadastro", "produtos");
-
 		try {
+			Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
+
+			BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco",
+					"dataCadastro", "produtos");
+			
 			return cadastroRestauranteService.salvar(restauranteAtual);
-		} catch (EntidadeNaoEncontradaException e) {
+		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -100,11 +100,11 @@ public class RestauranteController {
 	private void validate(Restaurante restaurante, String objectName) {
 		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
 		validator.validate(restaurante, bindingResult);
-		
+
 		if (bindingResult.hasErrors()) {
 			throw new ValidacaoException(bindingResult);
 		}
-		
+
 	}
 
 	private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {

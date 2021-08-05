@@ -59,7 +59,7 @@ public class CidadeController {
 		try {
 			Cidade cidadeAtual = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-			BeanUtils.copyProperties(cidade, cidadeAtual, "cidadeId");
+			BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 
 			return cadastroCidadeService.salvar(cidadeAtual);
 		} catch (EstadoNaoEncontradoException e) {
