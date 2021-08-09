@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.renatoviana.algafood.api.assembler.RestauranteDTOAssembler;
+import com.renatoviana.algafood.api.assembler.RestauranteInputDisassembler;
 import com.renatoviana.algafood.api.model.dto.RestauranteDTO;
 import com.renatoviana.algafood.api.model.input.RestauranteInput;
 import com.renatoviana.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
-import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
@@ -39,6 +39,9 @@ public class RestauranteController {
 	
 	@Autowired
 	private RestauranteDTOAssembler restauranteDTOAssembler;
+	
+	@Autowired
+	private RestauranteInputDisassembler restauranteInputDisassembler;
 
 	@GetMapping
 	public List<RestauranteDTO> listar() {
@@ -56,7 +59,7 @@ public class RestauranteController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 		try {
-			Restaurante restaurante = toDomainObject(restauranteInput);
+			Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
 			return restauranteDTOAssembler.toDTO(cadastroRestauranteService.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException e) {
@@ -68,7 +71,7 @@ public class RestauranteController {
 	public RestauranteDTO atualizar(@PathVariable Long restauranteId, 
 			@RequestBody @Valid RestauranteInput restauranteInput) {
 		try {
-			Restaurante restaurante = toDomainObject(restauranteInput);
+			Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
 			Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
@@ -87,16 +90,4 @@ public class RestauranteController {
 		cadastroRestauranteService.excluir(id);
 	}
 	
-	private Restaurante toDomainObject(RestauranteInput restauranteInput) {
-		
-		Cozinha cozinha = new Cozinha();
-		cozinha.setId(restauranteInput.getCozinha().getId());
-		
-		Restaurante restaurante = new Restaurante();
-		restaurante.setNome(restauranteInput.getNome());
-		restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
-		restaurante.setCozinha(cozinha);
-		
-		return restaurante;
-	}
 }
