@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.api.model.dto;
+package com.renatoviana.algafood.api.model.dto.output;
 
 import java.math.BigDecimal;
 
@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RestauranteDTO {
+public class RestauranteOutputDTO {
 	
 	private Long id;
 	private String nome;
 	private BigDecimal taxaFrete;
-	private CozinhaDTO cozinha;
+	private CozinhaOutputDTO cozinha;
 
 }

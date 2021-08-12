@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.api.model.input;
+package com.renatoviana.algafood.api.model.dto.input;
 
 import java.math.BigDecimal;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RestauranteInput {
+public class RestauranteInputDTO {
 	
 	@NotBlank
 	private String nome;
@@ -23,6 +23,6 @@ public class RestauranteInput {
 	
 	@Valid
 	@NotNull
-	private CozinhaIdInput cozinha;
+	private CozinhaIdInputDTO cozinha;
 
 }
