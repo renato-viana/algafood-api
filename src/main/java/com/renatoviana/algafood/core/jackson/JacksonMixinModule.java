@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.jackson;
+package com.renatoviana.algafood.core.jackson;
 
 import org.springframework.stereotype.Component;
 
