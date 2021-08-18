@@ -19,7 +19,7 @@ public class RestauranteInputDTODisassembler {
 		return modelMapper.map(restauranteInput, Restaurante.class);
 	}
 	
-	public void copyToDoaminObject(RestauranteInputDTO restauranteInput, Restaurante restaurante) {
+	public void copyToDomainObject(RestauranteInputDTO restauranteInput, Restaurante restaurante) {
 		// Para evitar org.hibernate.HibernateException: identifier of an instance of 
 		// com.renatoviana.algafood.domain.model.Cozinha was altered from 1 to 2
 		restaurante.setCozinha(new Cozinha());

@@ -1,15 +1,15 @@
 package com.renatoviana.algafood.api.model.dto.input;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class CozinhaIdInputDTO {
+public class EstadoInputDTO {
 	
-	@NotNull
-	private Long id;
+	@NotBlank
+	private String nome;
 
 }

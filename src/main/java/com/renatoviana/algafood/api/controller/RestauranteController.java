@@ -44,7 +44,9 @@ public class RestauranteController {
 
 	@GetMapping
 	public List<RestauranteOutputDTO> listar() {
-		return restauranteOutputDTOAssembler.toCollectionDTO(restauranteRepository.findAll());
+		List<Restaurante> restaurantes = restauranteRepository.findAll();
+		
+		return restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
 	}
 
 	@GetMapping("/{restauranteId}")
@@ -60,7 +62,9 @@ public class RestauranteController {
 		try {
 			Restaurante restaurante = restauranteInputDTODisassembler.toDomainObject(restauranteInput);
 			
-			return restauranteOutputDTOAssembler.toDTO(cadastroRestauranteService.salvar(restaurante));
+			restaurante = cadastroRestauranteService.salvar(restaurante);
+			
+			return restauranteOutputDTOAssembler.toDTO(restaurante);
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
@@ -72,9 +76,11 @@ public class RestauranteController {
 		try {
 			Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 			
-			restauranteInputDTODisassembler.copyToDoaminObject(restauranteInput, restauranteAtual);
+			restauranteInputDTODisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 			
-			return restauranteOutputDTOAssembler.toDTO(cadastroRestauranteService.salvar(restauranteAtual));
+			restauranteAtual = cadastroRestauranteService.salvar(restauranteAtual);
+			
+			return restauranteOutputDTOAssembler.toDTO(restauranteAtual);
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
