@@ -14,7 +14,8 @@ import com.renatoviana.algafood.domain.repository.EstadoRepository;
 @Service
 public class CadastroEstadoService {
 
-	private static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removida, pois está em uso!";
+	private static final String MSG_ESTADO_EM_USO = 
+			"Estado de código %d não pode ser removida, pois está em uso!";
 
 	@Autowired
 	EstadoRepository estadoRepository;
