@@ -15,7 +15,7 @@ import com.renatoviana.algafood.domain.repository.FormaPagamentoRepository;
 public class CadastroFormaPagamentoService {
 
 	private static final String MSG_FORMA_PAGAMENTO_EM_USO = 
-			"Forma de pagamento de código %d não pode ser removido, pois está em uso!";
+			"Forma de pagamento de código %d não pode ser removida, pois está em uso!";
 
 	@Autowired
 	private FormaPagamentoRepository formaPagamentoRepository;
