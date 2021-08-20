@@ -20,6 +20,7 @@ import com.renatoviana.algafood.api.assembler.RestauranteInputDTODisassembler;
 import com.renatoviana.algafood.api.assembler.RestauranteOutputDTOAssembler;
 import com.renatoviana.algafood.api.model.dto.input.RestauranteInputDTO;
 import com.renatoviana.algafood.api.model.dto.output.RestauranteOutputDTO;
+import com.renatoviana.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
 import com.renatoviana.algafood.domain.model.Restaurante;
@@ -65,7 +66,7 @@ public class RestauranteController {
 			restaurante = cadastroRestauranteService.salvar(restaurante);
 			
 			return restauranteOutputDTOAssembler.toDTO(restaurante);
-		} catch (CozinhaNaoEncontradaException e) {
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -81,7 +82,7 @@ public class RestauranteController {
 			restauranteAtual = cadastroRestauranteService.salvar(restauranteAtual);
 			
 			return restauranteOutputDTOAssembler.toDTO(restauranteAtual);
-		} catch (CozinhaNaoEncontradaException e) {
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}

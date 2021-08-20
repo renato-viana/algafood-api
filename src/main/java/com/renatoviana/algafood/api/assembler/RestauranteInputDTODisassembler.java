@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.renatoviana.algafood.api.model.dto.input.RestauranteInputDTO;
+import com.renatoviana.algafood.domain.model.Cidade;
 import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.model.Restaurante;
 
@@ -23,6 +24,10 @@ public class RestauranteInputDTODisassembler {
 		// Para evitar org.hibernate.HibernateException: identifier of an instance of 
 		// com.renatoviana.algafood.domain.model.Cozinha was altered from 1 to 2
 		restaurante.setCozinha(new Cozinha());
+		
+		if(restaurante.getEndereco() != null) {
+			restaurante.getEndereco().setCidade(new Cidade());
+		}
 		
 		modelMapper.map(restauranteInput, restaurante);
 	}
