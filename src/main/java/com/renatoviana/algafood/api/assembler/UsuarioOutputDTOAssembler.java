@@ -1,5 +1,6 @@
 package com.renatoviana.algafood.api.assembler;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class UsuarioOutputDTOAssembler {
 		return modelMapper.map(usuario, UsuarioOutputDTO.class);
 	}
 	
-	public List<UsuarioOutputDTO> toCollectionDTO(List<Usuario> usuarios) {
+	public List<UsuarioOutputDTO> toCollectionDTO(Collection<Usuario> usuarios) {
 		return usuarios.stream()
 					.map(usuario -> toDTO(usuario))
 					.collect(Collectors.toList());
