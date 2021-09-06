@@ -23,6 +23,7 @@ import com.renatoviana.algafood.api.model.dto.output.RestauranteOutputDTO;
 import com.renatoviana.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
+import com.renatoviana.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
@@ -36,24 +37,24 @@ public class RestauranteController {
 
 	@Autowired
 	private CadastroRestauranteService cadastroRestauranteService;
-	
+
 	@Autowired
 	private RestauranteOutputDTOAssembler restauranteOutputDTOAssembler;
-	
+
 	@Autowired
 	private RestauranteInputDTODisassembler restauranteInputDTODisassembler;
 
 	@GetMapping
 	public List<RestauranteOutputDTO> listar() {
 		List<Restaurante> restaurantes = restauranteRepository.findAll();
-		
+
 		return restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
 	}
 
 	@GetMapping("/{restauranteId}")
 	public RestauranteOutputDTO buscar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
-		
+
 		return restauranteOutputDTOAssembler.toDTO(restaurante);
 	}
 
@@ -62,9 +63,9 @@ public class RestauranteController {
 	public RestauranteOutputDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput) {
 		try {
 			Restaurante restaurante = restauranteInputDTODisassembler.toDomainObject(restauranteInput);
-			
+
 			restaurante = cadastroRestauranteService.salvar(restaurante);
-			
+
 			return restauranteOutputDTOAssembler.toDTO(restaurante);
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
@@ -72,15 +73,15 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteOutputDTO atualizar(@PathVariable Long restauranteId, 
+	public RestauranteOutputDTO atualizar(@PathVariable Long restauranteId,
 			@RequestBody @Valid RestauranteInputDTO restauranteInput) {
 		try {
 			Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
-			
+
 			restauranteInputDTODisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
-			
+
 			restauranteAtual = cadastroRestauranteService.salvar(restauranteAtual);
-			
+
 			return restauranteOutputDTOAssembler.toDTO(restauranteAtual);
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
@@ -92,28 +93,50 @@ public class RestauranteController {
 	public void remover(@PathVariable Long id) {
 		cadastroRestauranteService.excluir(id);
 	}
-	
+
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId) {
 		cadastroRestauranteService.ativar(restauranteId);
 	}
-	
+
+	@PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarMuitos(@RequestBody List<Long> restauranteIds) {
+		try {
+			cadastroRestauranteService.ativar(restauranteIds);
+
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long restauranteId) {
 		cadastroRestauranteService.inativar(restauranteId);
 	}
-	
+
+	@DeleteMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarMuitos(@RequestBody List<Long> restauranteIds) {
+		try {
+			cadastroRestauranteService.inativar(restauranteIds);
+
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
+
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long restauranteId) {
-	    cadastroRestauranteService.abrir(restauranteId);
+		cadastroRestauranteService.abrir(restauranteId);
 	}
 
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fechar(@PathVariable Long restauranteId) {
-	    cadastroRestauranteService.fechar(restauranteId);
+		cadastroRestauranteService.fechar(restauranteId);
 	}
 }
