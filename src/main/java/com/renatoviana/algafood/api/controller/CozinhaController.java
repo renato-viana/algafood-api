@@ -5,6 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,56 +32,60 @@ import com.renatoviana.algafood.domain.service.CadastroCozinhaService;
 @RequestMapping("/cozinhas")
 public class CozinhaController {
 
-	@Autowired
-	private CozinhaRepository cozinhaRepository;
+    @Autowired
+    private CozinhaRepository cozinhaRepository;
 
-	@Autowired
-	private CadastroCozinhaService cadastroCozinhaService;
-	
-	@Autowired
-	private CozinhaOutputDTOAssembler cozinhaOutputDTOAssembler;
-	
-	@Autowired
-	private CozinhaInputDTODisassembler cozinhaInputDTODisassembler;
+    @Autowired
+    private CadastroCozinhaService cadastroCozinhaService;
 
-	@GetMapping
-	public List<CozinhaOutputDTO> listar() {
-		List<Cozinha> cozinhas = cozinhaRepository.findAll();
-		
-		return cozinhaOutputDTOAssembler.toCollectionDTO(cozinhas);
-	}
+    @Autowired
+    private CozinhaOutputDTOAssembler cozinhaOutputDTOAssembler;
 
-	@GetMapping("/{cozinhaId}")
-	public CozinhaOutputDTO buscar(@PathVariable Long cozinhaId) {
-		Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
-		
-		return cozinhaOutputDTOAssembler.toDTO(cozinha);
-	}
+    @Autowired
+    private CozinhaInputDTODisassembler cozinhaInputDTODisassembler;
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public CozinhaOutputDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
-		Cozinha cozinha = cozinhaInputDTODisassembler.toDomainObject(cozinhaInput);
-		
-		cozinha = cadastroCozinhaService.salvar(cozinha);
-		
-		return cozinhaOutputDTOAssembler.toDTO(cozinha);
-	}
+    @GetMapping
+    public Page<CozinhaOutputDTO> listar(@PageableDefault(size = 10) Pageable pageable) {
+        Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
-	@PutMapping("/{cozinhaId}")
-	public CozinhaOutputDTO atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInput) {
-		Cozinha cozinhaAtual = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+        List<CozinhaOutputDTO> cozinhasOutput = cozinhaOutputDTOAssembler.toCollectionDTO(cozinhasPage.getContent());
 
-		cozinhaInputDTODisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
-		
-		cozinhaAtual = cadastroCozinhaService.salvar(cozinhaAtual);
+        Page<CozinhaOutputDTO> cozinhasOutputPage = new PageImpl<>(cozinhasOutput, pageable, cozinhasPage.getTotalElements());
 
-		return cozinhaOutputDTOAssembler.toDTO(cozinhaAtual);
-	}
+        return cozinhasOutputPage;
+    }
 
-	@DeleteMapping("/{cozinhaId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long cozinhaId) {
-		cadastroCozinhaService.excluir(cozinhaId);
-	}
+    @GetMapping("/{cozinhaId}")
+    public CozinhaOutputDTO buscar(@PathVariable Long cozinhaId) {
+        Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+
+        return cozinhaOutputDTOAssembler.toDTO(cozinha);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CozinhaOutputDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
+        Cozinha cozinha = cozinhaInputDTODisassembler.toDomainObject(cozinhaInput);
+
+        cozinha = cadastroCozinhaService.salvar(cozinha);
+
+        return cozinhaOutputDTOAssembler.toDTO(cozinha);
+    }
+
+    @PutMapping("/{cozinhaId}")
+    public CozinhaOutputDTO atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInput) {
+        Cozinha cozinhaAtual = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+
+        cozinhaInputDTODisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
+
+        cozinhaAtual = cadastroCozinhaService.salvar(cozinhaAtual);
+
+        return cozinhaOutputDTOAssembler.toDTO(cozinhaAtual);
+    }
+
+    @DeleteMapping("/{cozinhaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long cozinhaId) {
+        cadastroCozinhaService.excluir(cozinhaId);
+    }
 }

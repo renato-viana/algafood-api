@@ -4,17 +4,12 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.renatoviana.algafood.api.model.view.RestauranteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.web.bind.annotation.*;
 
 import com.renatoviana.algafood.api.assembler.RestauranteInputDTODisassembler;
 import com.renatoviana.algafood.api.assembler.RestauranteOutputDTOAssembler;
@@ -45,11 +40,41 @@ public class RestauranteController {
 	private RestauranteInputDTODisassembler restauranteInputDTODisassembler;
 
 	@GetMapping
-	public List<RestauranteOutputDTO> listar() {
+	public MappingJacksonValue listar(@RequestParam(required = false) String projecao) {
 		List<Restaurante> restaurantes = restauranteRepository.findAll();
+		List<RestauranteOutputDTO> restaurantesOutputDTO = restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
 
-		return restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
+		MappingJacksonValue restaurantesWrapper = new MappingJacksonValue(restaurantesOutputDTO);
+
+		restaurantesWrapper.setSerializationView(RestauranteView.Resumo.class);
+
+		if("apenas-nome".equals(projecao)) {
+			restaurantesWrapper.setSerializationView(RestauranteView.ApenasNome.class);
+		} else if ("completo".equals(projecao)) {
+			restaurantesWrapper.setSerializationView(null);
+		}
+
+		return restaurantesWrapper;
 	}
+
+//	@GetMapping
+//	public List<RestauranteOutputDTO> listar() {
+//		List<Restaurante> restaurantes = restauranteRepository.findAll();
+//
+//		return restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
+//	}
+
+//	@JsonView(RestauranteView.Resumo.class)
+//	@GetMapping(params = "projecao=resumo")
+//	public List<RestauranteOutputDTO> listarResumido() {
+//		return listar();
+//	}
+//
+//	@JsonView(RestauranteView.ApenasNome.class)
+//	@GetMapping(params = "projecao=apenas-nome")
+//	public List<RestauranteOutputDTO> listarApenasNome() {
+//		return listar();
+//	}
 
 	@GetMapping("/{restauranteId}")
 	public RestauranteOutputDTO buscar(@PathVariable Long restauranteId) {
