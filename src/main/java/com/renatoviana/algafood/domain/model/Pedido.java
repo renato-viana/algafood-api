@@ -8,16 +8,19 @@ import java.util.UUID;
 
 import javax.persistence.*;
 
+import com.renatoviana.algafood.domain.event.PedidoCanceladoEvent;
+import com.renatoviana.algafood.domain.event.PedidoConfirmadoEvent;
 import com.renatoviana.algafood.domain.exception.NegocioException;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
     @EqualsAndHashCode.Include
     @Id
@@ -74,6 +77,8 @@ public class Pedido {
     public void confirmar() {
         setStatus(StatusPedido.CONFIRMADO);
         setDataConfirmacao(OffsetDateTime.now());
+
+        registerEvent(new PedidoConfirmadoEvent(this));
     }
 
     public void entregar() {
@@ -84,6 +89,8 @@ public class Pedido {
     public void cancelar() {
         setStatus(StatusPedido.CANCELADO);
         setDataCancelamento(OffsetDateTime.now());
+
+        registerEvent(new PedidoCanceladoEvent(this));
     }
 
     private void setStatus(StatusPedido novoStatus) {
@@ -92,7 +99,6 @@ public class Pedido {
                     String.format("Status do pedido %s não pode ser alterado de %s para %s",
                             getCodigo(), getStatus().getDescricao(), novoStatus.getDescricao()));
         }
-        ;
 
         this.status = novoStatus;
     }

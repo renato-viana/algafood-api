@@ -19,11 +19,19 @@ public class FotoProduto {
     @MapsId
     private Produto produto;
 
-    @Column(name= "nome_arquivo")
+    @Column(name = "nome_arquivo")
     private String nomeArquivo;
 
     private String descricao;
     private String contentType;
     private Long tamanho;
+
+    public Long getRestauranteId() {
+        if (getProduto() != null) {
+            return getProduto().getRestaurante().getId();
+        }
+
+        return null;
+    }
 
 }
