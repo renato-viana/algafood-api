@@ -7,9 +7,7 @@ import javax.validation.Valid;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.renatoviana.algafood.api.model.view.RestauranteView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,21 +23,22 @@ import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 
+@CrossOrigin(maxAge = 10)
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
 
-    @Autowired
-    private RestauranteRepository restauranteRepository;
+	@Autowired
+	private RestauranteRepository restauranteRepository;
 
-    @Autowired
-    private CadastroRestauranteService cadastroRestauranteService;
+	@Autowired
+	private CadastroRestauranteService cadastroRestauranteService;
 
-    @Autowired
-    private RestauranteOutputDTOAssembler restauranteOutputDTOAssembler;
+	@Autowired
+	private RestauranteOutputDTOAssembler restauranteOutputDTOAssembler;
 
-    @Autowired
-    private RestauranteInputDTODisassembler restauranteInputDTODisassembler;
+	@Autowired
+	private RestauranteInputDTODisassembler restauranteInputDTODisassembler;
 
 //	@GetMapping
 //	public MappingJacksonValue listar(@RequestParam(required = false) String projecao) {
@@ -59,17 +58,13 @@ public class RestauranteController {
 //		return restaurantesWrapper;
 //	}
 
-    @JsonView(RestauranteView.Resumo.class)
-    @GetMapping
-    public ResponseEntity<List<RestauranteOutputDTO>> listar() {
-        List<Restaurante> restaurantes = restauranteRepository.findAll();
+	@JsonView(RestauranteView.Resumo.class)
+	@GetMapping
+	public List<RestauranteOutputDTO> listar() {
+		List<Restaurante> restaurantes = restauranteRepository.findAll();
 
-        List<RestauranteOutputDTO> restaurantesOutputDTO = restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://www.algafood.local:8000")
-                .body(restaurantesOutputDTO);
-    }
+		return restauranteOutputDTOAssembler.toCollectionDTO(restaurantes);
+	}
 
 //	@JsonView(RestauranteView.Resumo.class)
 //	@GetMapping(params = "projecao=resumo")
@@ -83,92 +78,92 @@ public class RestauranteController {
 //		return listar();
 //	}
 
-    @GetMapping("/{restauranteId}")
-    public RestauranteOutputDTO buscar(@PathVariable Long restauranteId) {
-        Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
+	@GetMapping("/{restauranteId}")
+	public RestauranteOutputDTO buscar(@PathVariable Long restauranteId) {
+		Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-        return restauranteOutputDTOAssembler.toDTO(restaurante);
-    }
+		return restauranteOutputDTOAssembler.toDTO(restaurante);
+	}
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public RestauranteOutputDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput) {
-        try {
-            Restaurante restaurante = restauranteInputDTODisassembler.toDomainObject(restauranteInput);
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public RestauranteOutputDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInput) {
+		try {
+			Restaurante restaurante = restauranteInputDTODisassembler.toDomainObject(restauranteInput);
 
-            restaurante = cadastroRestauranteService.salvar(restaurante);
+			restaurante = cadastroRestauranteService.salvar(restaurante);
 
-            return restauranteOutputDTOAssembler.toDTO(restaurante);
-        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
-        }
-    }
+			return restauranteOutputDTOAssembler.toDTO(restaurante);
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
+	}
 
-    @PutMapping("/{restauranteId}")
-    public RestauranteOutputDTO atualizar(@PathVariable Long restauranteId,
-                                          @RequestBody @Valid RestauranteInputDTO restauranteInput) {
-        try {
-            Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
+	@PutMapping("/{restauranteId}")
+	public RestauranteOutputDTO atualizar(@PathVariable Long restauranteId,
+			@RequestBody @Valid RestauranteInputDTO restauranteInput) {
+		try {
+			Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-            restauranteInputDTODisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
+			restauranteInputDTODisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
-            restauranteAtual = cadastroRestauranteService.salvar(restauranteAtual);
+			restauranteAtual = cadastroRestauranteService.salvar(restauranteAtual);
 
-            return restauranteOutputDTOAssembler.toDTO(restauranteAtual);
-        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
-        }
-    }
+			return restauranteOutputDTOAssembler.toDTO(restauranteAtual);
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
+	}
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable Long id) {
-        cadastroRestauranteService.excluir(id);
-    }
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void remover(@PathVariable Long id) {
+		cadastroRestauranteService.excluir(id);
+	}
 
-    @PutMapping("/{restauranteId}/ativo")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativar(@PathVariable Long restauranteId) {
-        cadastroRestauranteService.ativar(restauranteId);
-    }
+	@PutMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable Long restauranteId) {
+		cadastroRestauranteService.ativar(restauranteId);
+	}
 
-    @PutMapping("/ativacoes")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativarMuitos(@RequestBody List<Long> restauranteIds) {
-        try {
-            cadastroRestauranteService.ativar(restauranteIds);
+	@PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarMuitos(@RequestBody List<Long> restauranteIds) {
+		try {
+			cadastroRestauranteService.ativar(restauranteIds);
 
-        } catch (RestauranteNaoEncontradoException e) {
-            throw new NegocioException(e.getMessage(), e);
-        }
-    }
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
 
-    @DeleteMapping("/{restauranteId}/ativo")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativar(@PathVariable Long restauranteId) {
-        cadastroRestauranteService.inativar(restauranteId);
-    }
+	@DeleteMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable Long restauranteId) {
+		cadastroRestauranteService.inativar(restauranteId);
+	}
 
-    @DeleteMapping("/ativacoes")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativarMuitos(@RequestBody List<Long> restauranteIds) {
-        try {
-            cadastroRestauranteService.inativar(restauranteIds);
+	@DeleteMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarMuitos(@RequestBody List<Long> restauranteIds) {
+		try {
+			cadastroRestauranteService.inativar(restauranteIds);
 
-        } catch (RestauranteNaoEncontradoException e) {
-            throw new NegocioException(e.getMessage(), e);
-        }
-    }
+		} catch (RestauranteNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
 
-    @PutMapping("/{restauranteId}/abertura")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void abrir(@PathVariable Long restauranteId) {
-        cadastroRestauranteService.abrir(restauranteId);
-    }
+	@PutMapping("/{restauranteId}/abertura")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void abrir(@PathVariable Long restauranteId) {
+		cadastroRestauranteService.abrir(restauranteId);
+	}
 
-    @PutMapping("/{restauranteId}/fechamento")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void fechar(@PathVariable Long restauranteId) {
-        cadastroRestauranteService.fechar(restauranteId);
-    }
+	@PutMapping("/{restauranteId}/fechamento")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void fechar(@PathVariable Long restauranteId) {
+		cadastroRestauranteService.fechar(restauranteId);
+	}
 }
