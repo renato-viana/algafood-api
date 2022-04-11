@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.renatoviana.algafood.api.model.view.RestauranteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import com.renatoviana.algafood.api.assembler.RestauranteInputDTODisassembler;
@@ -23,7 +22,6 @@ import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 
-@CrossOrigin(maxAge = 10)
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
