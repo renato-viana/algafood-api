@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.renatoviana.algafood.api.assembler.GrupoInputDTODisassembler;
-import com.renatoviana.algafood.api.assembler.GrupoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.input.GrupoInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.GrupoOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.disassembler.GrupoModelRequestDisassembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.GrupoModelResponseAssembler;
+import com.renatoviana.algafood.api.model.request.GrupoModelRequest;
+import com.renatoviana.algafood.api.model.response.GrupoModelResponse;
 import com.renatoviana.algafood.domain.model.Grupo;
 import com.renatoviana.algafood.domain.repository.GrupoRepository;
 import com.renatoviana.algafood.domain.service.CadastroGrupoService;
@@ -37,45 +37,45 @@ public class GrupoController implements GrupoControllerOpenApi {
 	private CadastroGrupoService cadastroGrupoService;
 	
 	@Autowired
-	private GrupoOutputDTOAssembler grupoOutputDTOAssembler;
+	private GrupoModelResponseAssembler grupoModelResponseAssembler;
 
 	@Autowired
-	private GrupoInputDTODisassembler grupoInputDTODisassembler;  
+	private GrupoModelRequestDisassembler grupoModelRequestDisassembler;
 
 	@GetMapping
-	public List<GrupoOutputDTO> listar() {
+	public List<GrupoModelResponse> listar() {
 		List<Grupo> grupos = grupoRepository.findAll();
 		
-		return grupoOutputDTOAssembler.toCollectionDTO(grupos);
+		return grupoModelResponseAssembler.toCollectionModelResponse(grupos);
 	}
 
 	@GetMapping("/{grupoId}")
-	public GrupoOutputDTO buscar(@PathVariable Long grupoId) {
+	public GrupoModelResponse buscar(@PathVariable Long grupoId) {
 		Grupo grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
 		
-		return grupoOutputDTOAssembler.toDTO(grupo);
+		return grupoModelResponseAssembler.toModelResponse(grupo);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public GrupoOutputDTO adicionar(@RequestBody @Valid GrupoInputDTO grupoInput) {
-		 Grupo grupo = grupoInputDTODisassembler.toDomainObject(grupoInput);
+	public GrupoModelResponse adicionar(@RequestBody @Valid GrupoModelRequest grupoInput) {
+		 Grupo grupo = grupoModelRequestDisassembler.toDomainObject(grupoInput);
 		    
 		    grupo = cadastroGrupoService.salvar(grupo);
 		    
-		    return grupoOutputDTOAssembler.toDTO(grupo);
+		    return grupoModelResponseAssembler.toModelResponse(grupo);
 	}
 
 	@PutMapping("/{grupoId}")
-	public GrupoOutputDTO atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInputDTO grupoInput) {
+	public GrupoModelResponse atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoModelRequest grupoInput) {
 
 		Grupo grupoAtual = cadastroGrupoService.buscarOuFalhar(grupoId);
 
-		grupoInputDTODisassembler.copyToDomainObject(grupoInput, grupoAtual);
+		grupoModelRequestDisassembler.copyToDomainObject(grupoInput, grupoAtual);
 		
 		grupoAtual = cadastroGrupoService.salvar(grupoAtual);
 		
-		return grupoOutputDTOAssembler.toDTO(grupoAtual);
+		return grupoModelResponseAssembler.toModelResponse(grupoAtual);
 	}
 
 	@DeleteMapping("/{grupoId}")

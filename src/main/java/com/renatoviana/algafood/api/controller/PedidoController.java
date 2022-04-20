@@ -1,19 +1,19 @@
 package com.renatoviana.algafood.api.controller;
 
 import com.google.common.collect.ImmutableMap;
-import com.renatoviana.algafood.api.assembler.PedidoInputDTODisassembler;
-import com.renatoviana.algafood.api.assembler.PedidoOutputDTOAssembler;
-import com.renatoviana.algafood.api.assembler.PedidoResumoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.input.PedidoInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.PedidoOutputDTO;
-import com.renatoviana.algafood.api.model.dto.output.PedidoResumoOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.disassembler.PedidoModelRequestDisassembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.PedidoModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.PedidoResumoModelResponseAssembler;
+import com.renatoviana.algafood.api.model.request.PedidoModelRequest;
+import com.renatoviana.algafood.api.model.response.PedidoModelResponse;
+import com.renatoviana.algafood.api.model.response.PedidoResumoModelResponse;
 import com.renatoviana.algafood.core.data.PageableTranslator;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
+import com.renatoviana.algafood.domain.filter.PedidoFilter;
 import com.renatoviana.algafood.domain.model.Pedido;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.repository.PedidoRepository;
-import com.renatoviana.algafood.domain.filter.PedidoFilter;
 import com.renatoviana.algafood.domain.service.EmissaoPedidoService;
 import com.renatoviana.algafood.infrastructure.repository.spec.PedidoSpecs;
 import io.swagger.annotations.Api;
@@ -40,19 +40,19 @@ public class PedidoController {
     private EmissaoPedidoService emissaoPedidoService;
 
     @Autowired
-    private PedidoOutputDTOAssembler pedidoOutputDTOAssembler;
+    private PedidoModelResponseAssembler pedidoModelResponseAssembler;
 
     @Autowired
-    private PedidoResumoOutputDTOAssembler pedidoResumoOutputDTOAssembler;
+    private PedidoResumoModelResponseAssembler pedidoResumoModelResponseAssembler;
 
 
     @Autowired
-    private PedidoInputDTODisassembler pedidoInputDTODisassembler;
+    private PedidoModelRequestDisassembler pedidoModelRequestDisassembler;
 
 //    @GetMapping
 //    public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
 //        List<Pedido> pedidos = pedidoRepository.findAll();
-//        List<PedidoResumoOutputDTO> pedidosOutputDto = pedidoResumoOutputDTOAssembler.toCollectionDTO(pedidos);
+//        List<PedidoResumoOutputDTO> pedidosOutputDto = pedidoResumoModelResponseAssembler.toCollectionDTO(pedidos);
 //
 //        MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosOutputDto);
 //
@@ -69,30 +69,32 @@ public class PedidoController {
 //    }
 
     @GetMapping
-    public Page<PedidoResumoOutputDTO> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+    public Page<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
         pageable = traduzirPageable(pageable);
 
         Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
-        List<PedidoResumoOutputDTO> pedidosResumoOutput = pedidoResumoOutputDTOAssembler.toCollectionDTO(pedidosPage.getContent());
+        List<PedidoResumoModelResponse> pedidosResumoOutput =
+                pedidoResumoModelResponseAssembler.toCollectionModelResponse(pedidosPage.getContent());
 
-        Page<PedidoResumoOutputDTO> pedidosResumoOutputPage = new PageImpl<>(pedidosResumoOutput, pageable, pedidosPage.getTotalElements());
+        Page<PedidoResumoModelResponse> pedidosResumoOutputPage =
+                new PageImpl<>(pedidosResumoOutput, pageable, pedidosPage.getTotalElements());
 
         return pedidosResumoOutputPage;
     }
 
     @GetMapping("/{codigoPedido}")
-    public PedidoOutputDTO buscar(@PathVariable String codigoPedido) {
+    public PedidoModelResponse buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 
-        return pedidoOutputDTOAssembler.toDTO(pedido);
+        return pedidoModelResponseAssembler.toModelResponse(pedido);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PedidoOutputDTO adicionar(@Valid @RequestBody PedidoInputDTO pedidoInput) {
+    public PedidoModelResponse adicionar(@Valid @RequestBody PedidoModelRequest pedidoInput) {
         try {
-            Pedido novoPedido = pedidoInputDTODisassembler.toDomainObject(pedidoInput);
+            Pedido novoPedido = pedidoModelRequestDisassembler.toDomainObject(pedidoInput);
 
             // TODO pegar usuário autenticado
             novoPedido.setCliente(new Usuario());
@@ -100,7 +102,7 @@ public class PedidoController {
 
             novoPedido = emissaoPedidoService.emitir(novoPedido);
 
-            return pedidoOutputDTOAssembler.toDTO(novoPedido);
+            return pedidoModelResponseAssembler.toModelResponse(novoPedido);
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }

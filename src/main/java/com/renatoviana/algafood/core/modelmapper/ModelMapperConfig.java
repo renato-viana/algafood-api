@@ -1,12 +1,12 @@
 package com.renatoviana.algafood.core.modelmapper;
 
-import com.renatoviana.algafood.api.model.dto.input.ItemPedidoInputDTO;
+import com.renatoviana.algafood.api.model.request.ItemPedidoModelRequest;
 import com.renatoviana.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.renatoviana.algafood.api.model.dto.output.EnderecoOutputDTO;
+import com.renatoviana.algafood.api.model.response.EnderecoModelResponse;
 import com.renatoviana.algafood.domain.model.Endereco;
 
 @Configuration
@@ -16,11 +16,11 @@ public class ModelMapperConfig {
 	public ModelMapper modelMapper() {
 		var modelMapper = new ModelMapper();
 
-		modelMapper.createTypeMap(ItemPedidoInputDTO.class, ItemPedido.class)
+		modelMapper.createTypeMap(ItemPedidoModelRequest.class, ItemPedido.class)
 				.addMappings(mapper -> mapper.skip(ItemPedido::setId));
 		
 		var enderecoToEnderecoOutputDTOTypeMap = modelMapper.createTypeMap(
-				Endereco.class, EnderecoOutputDTO.class);
+				Endereco.class, EnderecoModelResponse.class);
 		
 		enderecoToEnderecoOutputDTOTypeMap.<String>addMapping(
 				src -> src.getCidade().getEstado().getNome(),

@@ -1,7 +1,7 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.assembler.GrupoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.output.GrupoOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.assembler.GrupoModelResponseAssembler;
+import com.renatoviana.algafood.api.model.response.GrupoModelResponse;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
 import io.swagger.annotations.Api;
@@ -16,28 +16,28 @@ import java.util.List;
 @RequestMapping(value = "/usuarios/{usuarioId}/grupos")
 public class UsuarioGrupoController {
 
-	@Autowired
-	private CadastroUsuarioService cadastroUsuarioService;
+    @Autowired
+    private CadastroUsuarioService cadastroUsuarioService;
 
-	@Autowired
-	private GrupoOutputDTOAssembler grupoOutputDTOAssembler;
+    @Autowired
+    private GrupoModelResponseAssembler grupoModelResponseAssembler;
 
-	@GetMapping
-	public List<GrupoOutputDTO> listar(@PathVariable Long usuarioId) {
-		Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
+    @GetMapping
+    public List<GrupoModelResponse> listar(@PathVariable Long usuarioId) {
+        Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
-		return grupoOutputDTOAssembler.toCollectionDTO(usuario.getGrupos());
-	}
+        return grupoModelResponseAssembler.toCollectionModelResponse(usuario.getGrupos());
+    }
 
-	@DeleteMapping("/{grupoId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
-		cadastroUsuarioService.desassociarGrupo(usuarioId, grupoId);
-	}
+    @DeleteMapping("/{grupoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
+        cadastroUsuarioService.desassociarGrupo(usuarioId, grupoId);
+    }
 
-	@PutMapping("/{grupoId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void associar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
-		cadastroUsuarioService.associarGrupo(usuarioId, grupoId);
-	}
+    @PutMapping("/{grupoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void associar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
+        cadastroUsuarioService.associarGrupo(usuarioId, grupoId);
+    }
 }

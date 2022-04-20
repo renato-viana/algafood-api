@@ -1,7 +1,7 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.assembler.UsuarioOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.output.UsuarioOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.assembler.UsuarioModelResponseAssembler;
+import com.renatoviana.algafood.api.model.response.UsuarioModelResponse;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import io.swagger.annotations.Api;
@@ -20,10 +20,10 @@ public class RestauranteUsuarioResponsavelController {
     private CadastroRestauranteService cadastroRestauranteService;
     
     @Autowired
-    private UsuarioOutputDTOAssembler usuarioOutputDTOAssembler;
+    private UsuarioModelResponseAssembler usuarioOutputDTOAssembler;
     
     @GetMapping
-    public List<UsuarioOutputDTO> listar(@PathVariable Long restauranteId) {
+    public List<UsuarioModelResponse> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
         
         return usuarioOutputDTOAssembler.toCollectionDTO(restaurante.getResponsaveis());

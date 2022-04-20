@@ -1,8 +1,8 @@
 package com.renatoviana.algafood.api.openapi.controller;
 
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
-import com.renatoviana.algafood.api.model.dto.input.CidadeInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.CidadeOutputDTO;
+import com.renatoviana.algafood.api.model.request.CidadeModelRequest;
+import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import io.swagger.annotations.*;
 
 import java.util.List;
@@ -11,14 +11,14 @@ import java.util.List;
 public interface CidadeControllerOpenApi {
 
     @ApiOperation("Lista as cidades")
-    public List<CidadeOutputDTO> listar();
+    public List<CidadeModelResponse> listar();
 
     @ApiOperation("Busca uma cidade por ID")
     @ApiResponses({
             @ApiResponse(code = 400, message = "ID da cidade inválido", response = Problem.class),
             @ApiResponse(code = 404, message = "Cidade não econtrada", response = Problem.class)
     })
-    CidadeOutputDTO buscar(
+    CidadeModelResponse buscar(
             @ApiParam(value = "ID de uma cidade", example = "1")
                     Long cidadeId);
 
@@ -26,20 +26,20 @@ public interface CidadeControllerOpenApi {
     @ApiResponses({
             @ApiResponse(code = 201, message = "Cidade cadastrada")
     })
-    CidadeOutputDTO adicionar(
+    CidadeModelResponse adicionar(
             @ApiParam(name = "corpo", value = "Representação de uma nova cidade")
-                    CidadeInputDTO cidadeInput);
+                    CidadeModelRequest cidadeInput);
 
     @ApiOperation("Atualiza uma cidade por ID")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Cidade atualizada"),
             @ApiResponse(code = 404, message = "Cidade não econtrada", response = Problem.class)
     })
-    CidadeOutputDTO Atualizar(
+    CidadeModelResponse Atualizar(
             @ApiParam(value = "ID de uma cidade", example = "1")
                     Long cidadeId,
             @ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados")
-                    CidadeInputDTO cidadeInput);
+                    CidadeModelRequest cidadeInput);
 
     @ApiOperation("Exclui uma cidade por ID")
     @ApiResponses({

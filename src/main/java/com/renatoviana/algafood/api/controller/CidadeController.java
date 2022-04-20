@@ -1,10 +1,10 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.assembler.CidadeInputDTODisassembler;
-import com.renatoviana.algafood.api.assembler.CidadeOutputDTOAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.CidadeModelRequestDisassembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.CidadeModelResponseAssembler;
+import com.renatoviana.algafood.api.model.request.CidadeModelRequest;
+import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import com.renatoviana.algafood.api.openapi.controller.CidadeControllerOpenApi;
-import com.renatoviana.algafood.api.model.dto.input.CidadeInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.CidadeOutputDTO;
 import com.renatoviana.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
 import com.renatoviana.algafood.domain.model.Cidade;
@@ -29,54 +29,54 @@ public class CidadeController implements CidadeControllerOpenApi {
     private CadastroCidadeService cadastroCidadeService;
 
     @Autowired
-    private CidadeOutputDTOAssembler cidadeOutputDTOAssembler;
+    private CidadeModelResponseAssembler cidadeModelResponseAssembler;
 
     @Autowired
-    private CidadeInputDTODisassembler cidadeInputDTODisassembler;
+    private CidadeModelRequestDisassembler cidadeModelRequestDisassembler;
 
     @GetMapping
-    public List<CidadeOutputDTO> listar() {
+    public List<CidadeModelResponse> listar() {
         List<Cidade> cidades = cidadeRepository.findAll();
 
-        return cidadeOutputDTOAssembler.toCollectionDTO(cidades);
+        return cidadeModelResponseAssembler.toCollectionModelResponse(cidades);
     }
 
     @GetMapping("/{cidadeId}")
-    public CidadeOutputDTO buscar(
+    public CidadeModelResponse buscar(
             @PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-        return cidadeOutputDTOAssembler.toDTO(cidade);
+        return cidadeModelResponseAssembler.toModelResponse(cidade);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CidadeOutputDTO adicionar(
-            @RequestBody @Valid CidadeInputDTO cidadeInput) {
+    public CidadeModelResponse adicionar(
+            @RequestBody @Valid CidadeModelRequest cidadeInput) {
         try {
-            Cidade cidade = cidadeInputDTODisassembler.toDomainObject(cidadeInput);
+            Cidade cidade = cidadeModelRequestDisassembler.toDomainObject(cidadeInput);
 
             cidade = cadastroCidadeService.salvar(cidade);
 
-            return cidadeOutputDTOAssembler.toDTO(cidade);
+            return cidadeModelResponseAssembler.toModelResponse(cidade);
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{cidadeId}")
-    public CidadeOutputDTO Atualizar(
+    public CidadeModelResponse Atualizar(
             @PathVariable Long cidadeId,
-            @RequestBody @Valid CidadeInputDTO cidadeInput) {
+            @RequestBody @Valid CidadeModelRequest cidadeInput) {
 
         try {
             Cidade cidadeAtual = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-            cidadeInputDTODisassembler.copyToDoaminObject(cidadeInput, cidadeAtual);
+            cidadeModelRequestDisassembler.copyToDoaminObject(cidadeInput, cidadeAtual);
 
             cidadeAtual = cadastroCidadeService.salvar(cidadeAtual);
 
-            return cidadeOutputDTOAssembler.toDTO(cidadeAtual);
+            return cidadeModelResponseAssembler.toModelResponse(cidadeAtual);
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }

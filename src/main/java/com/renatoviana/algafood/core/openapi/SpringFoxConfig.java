@@ -2,7 +2,7 @@ package com.renatoviana.algafood.core.openapi;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
-import com.renatoviana.algafood.api.model.dto.output.CozinhaOutputDTO;
+import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
 import com.renatoviana.algafood.api.openapi.model.CozinhasModelResponseOpenApi;
 import com.renatoviana.algafood.api.openapi.model.PageableModelResponseOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +52,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .additionalModels(typeResolver.resolve(Problem.class))
                 .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
                 .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(Page.class, CozinhaOutputDTO.class),
+                        typeResolver.resolve(Page.class, CozinhaModelResponse.class),
                         CozinhasModelResponseOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(tags()[0], tags());

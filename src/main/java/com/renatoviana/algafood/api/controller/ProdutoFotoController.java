@@ -1,8 +1,8 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.assembler.FotoProdutoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.input.FotoProdutoInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.FotoProdutoOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.assembler.FotoProdutoModelResponseAssembler;
+import com.renatoviana.algafood.api.model.request.FotoProdutoModelRequest;
+import com.renatoviana.algafood.api.model.response.FotoProdutoModelResponse;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.model.FotoProduto;
 import com.renatoviana.algafood.domain.model.Produto;
@@ -37,16 +37,16 @@ public class ProdutoFotoController {
     CadastroProdutoService cadastroProdutoService;
 
     @Autowired
-    FotoProdutoOutputDTOAssembler fotoProdutoOutputDTOAssembler;
+    FotoProdutoModelResponseAssembler fotoProdutoModelResponseAssembler;
 
     @Autowired
     private FotoStorageService fotoStorageService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public FotoProdutoOutputDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+    public FotoProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
-        return fotoProdutoOutputDTOAssembler.toDTO(fotoProduto);
+        return fotoProdutoModelResponseAssembler.toModelResponse(fotoProduto);
     }
 
     @GetMapping
@@ -89,7 +89,7 @@ public class ProdutoFotoController {
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public FotoProdutoOutputDTO atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInputDTO fotoProdutoInput) throws IOException {
+    public FotoProdutoModelResponse atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoModelRequest fotoProdutoInput) throws IOException {
 
         Produto produto = cadastroProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
@@ -104,7 +104,7 @@ public class ProdutoFotoController {
 
         FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
 
-        return fotoProdutoOutputDTOAssembler.toDTO(fotoSalva);
+        return fotoProdutoModelResponseAssembler.toModelResponse(fotoSalva);
     }
 
     @DeleteMapping

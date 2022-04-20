@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.renatoviana.algafood.api.assembler.UsuarioInputDTODisassembler;
-import com.renatoviana.algafood.api.assembler.UsuarioOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.input.SenhaInputDTO;
-import com.renatoviana.algafood.api.model.dto.input.UsuarioComSenhaInputDTO;
-import com.renatoviana.algafood.api.model.dto.input.UsuarioInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.UsuarioOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.disassembler.UsuarioModelRequestDisassembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.UsuarioModelResponseAssembler;
+import com.renatoviana.algafood.api.model.request.SenhaModelRequest;
+import com.renatoviana.algafood.api.model.request.UsuarioComSenhaModelRequest;
+import com.renatoviana.algafood.api.model.request.UsuarioModelRequest;
+import com.renatoviana.algafood.api.model.response.UsuarioModelResponse;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.repository.UsuarioRepository;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
@@ -38,20 +38,20 @@ public class UsuarioController {
 	private CadastroUsuarioService cadastroUsuarioService;
 	
 	@Autowired
-	private UsuarioOutputDTOAssembler usuarioOutputDTOAssembler;
+	private UsuarioModelResponseAssembler usuarioOutputDTOAssembler;
 
 	@Autowired
-	private UsuarioInputDTODisassembler usuarioInputDTODisassembler;  
+	private UsuarioModelRequestDisassembler usuarioInputDTODisassembler;
 
 	@GetMapping
-	public List<UsuarioOutputDTO> listar() {
+	public List<UsuarioModelResponse> listar() {
 		List<Usuario> usuarios = usuarioRepository.findAll();
 		
 		return usuarioOutputDTOAssembler.toCollectionDTO(usuarios);
 	}
 
 	@GetMapping("/{usuarioId}")
-	public UsuarioOutputDTO buscar(@PathVariable Long usuarioId) {
+	public UsuarioModelResponse buscar(@PathVariable Long usuarioId) {
 		Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 		
 		return usuarioOutputDTOAssembler.toDTO(usuario);
@@ -59,7 +59,7 @@ public class UsuarioController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public UsuarioOutputDTO adicionar(@RequestBody @Valid UsuarioComSenhaInputDTO usuarioInput) {
+	public UsuarioModelResponse adicionar(@RequestBody @Valid UsuarioComSenhaModelRequest usuarioInput) {
 		 Usuario usuario = usuarioInputDTODisassembler.toDomainObject(usuarioInput);
 		    
 		    usuario = cadastroUsuarioService.salvar(usuario);
@@ -68,7 +68,7 @@ public class UsuarioController {
 	}
 
 	@PutMapping("/{usuarioId}")
-	public UsuarioOutputDTO atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioInputDTO usuarioInput) {
+	public UsuarioModelResponse atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioModelRequest usuarioInput) {
 
 		Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
@@ -81,7 +81,7 @@ public class UsuarioController {
 
 	@PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInputDTO senha) {
+    public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaModelRequest senha) {
         cadastroUsuarioService.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
     } 
 }

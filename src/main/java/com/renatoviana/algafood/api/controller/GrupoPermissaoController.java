@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.renatoviana.algafood.api.assembler.PermissaoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.output.PermissaoOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.assembler.PermissaoModelResponseAssembler;
+import com.renatoviana.algafood.api.model.response.PermissaoModelResponse;
 import com.renatoviana.algafood.domain.model.Grupo;
 import com.renatoviana.algafood.domain.service.CadastroGrupoService;
 
@@ -27,13 +27,13 @@ public class GrupoPermissaoController {
 	private CadastroGrupoService cadastroGrupoService;
 	
 	@Autowired
-	private PermissaoOutputDTOAssembler permissaoOutputDTOAssembler;
+	private PermissaoModelResponseAssembler permissaoModelResponseAssembler;
 	
 	@GetMapping
-	public List<PermissaoOutputDTO> listar(@PathVariable Long grupoId) {
+	public List<PermissaoModelResponse> listar(@PathVariable Long grupoId) {
 		Grupo grupo = cadastroGrupoService.buscarOuFalhar(grupoId);
 		
-		return permissaoOutputDTOAssembler.toCollectionDTO(grupo.getPermissoes());
+		return permissaoModelResponseAssembler.toCollectionModelResponse(grupo.getPermissoes());
 	}
 	
 	@DeleteMapping("/{permissaoId}")

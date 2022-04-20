@@ -1,9 +1,9 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.assembler.ProdutoInputDTODisassembler;
-import com.renatoviana.algafood.api.assembler.ProdutoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.input.ProdutoInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.ProdutoOutputDTO;
+import com.renatoviana.algafood.api.modelmapper.disassembler.ProdutoModelRequestDisassembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.ProdutoModelResponseAssembler;
+import com.renatoviana.algafood.api.model.request.ProdutoModelRequest;
+import com.renatoviana.algafood.api.model.response.ProdutoModelResponse;
 import com.renatoviana.algafood.domain.model.Produto;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.ProdutoRepository;
@@ -32,13 +32,13 @@ public class ProdutoController {
     private CadastroRestauranteService cadastroRestaurante;
 
     @Autowired
-    private ProdutoOutputDTOAssembler produtoOutputDTOAssembler;
+    private ProdutoModelResponseAssembler produtoModelResponseAssembler;
 
     @Autowired
-    private ProdutoInputDTODisassembler produtoInputDTODisassembler;
+    private ProdutoModelRequestDisassembler produtoModelRequestDisassembler;
 
     @GetMapping
-    public List<ProdutoOutputDTO> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos) {
+    public List<ProdutoModelResponse> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
         List<Produto> produtos = null;
@@ -49,39 +49,39 @@ public class ProdutoController {
             produtos = produtoRepository.findAtivosByRestaurante(restaurante);
         }
 
-        return produtoOutputDTOAssembler.toCollectionDTO(produtos);
+        return produtoModelResponseAssembler.toCollectionModelResponse(produtos);
     }
 
     @GetMapping("/{produtoId}")
-    public ProdutoOutputDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+    public ProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
 
-        return produtoOutputDTOAssembler.toDTO(produto);
+        return produtoModelResponseAssembler.toModelResponse(produto);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProdutoOutputDTO adicionar(@PathVariable Long restauranteId,
-                                      @RequestBody @Valid ProdutoInputDTO produtoInput) {
+    public ProdutoModelResponse adicionar(@PathVariable Long restauranteId,
+                                          @RequestBody @Valid ProdutoModelRequest produtoInput) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
-        Produto produto = produtoInputDTODisassembler.toDomainObject(produtoInput);
+        Produto produto = produtoModelRequestDisassembler.toDomainObject(produtoInput);
         produto.setRestaurante(restaurante);
 
         produto = cadastroProduto.salvar(produto);
 
-        return produtoOutputDTOAssembler.toDTO(produto);
+        return produtoModelResponseAssembler.toModelResponse(produto);
     }
 
     @PutMapping("/{produtoId}")
-    public ProdutoOutputDTO atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-                                      @RequestBody @Valid ProdutoInputDTO produtoInput) {
+    public ProdutoModelResponse atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+                                          @RequestBody @Valid ProdutoModelRequest produtoInput) {
         Produto produtoAtual = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
 
-        produtoInputDTODisassembler.copyToDomainObject(produtoInput, produtoAtual);
+        produtoModelRequestDisassembler.copyToDomainObject(produtoInput, produtoAtual);
 
         produtoAtual = cadastroProduto.salvar(produtoAtual);
 
-        return produtoOutputDTOAssembler.toDTO(produtoAtual);
+        return produtoModelResponseAssembler.toModelResponse(produtoAtual);
     }
 }   
