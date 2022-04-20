@@ -10,6 +10,7 @@ import com.renatoviana.algafood.domain.service.CadastroProdutoService;
 import com.renatoviana.algafood.domain.service.CatalogoFotoProdutoService;
 import com.renatoviana.algafood.domain.service.FotoStorageService;
 import com.renatoviana.algafood.domain.service.FotoStorageService.FotoRecuperada;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+@Api(tags = "Fotos dos produtos")
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class ProdutoFotoController {
@@ -49,7 +51,7 @@ public class ProdutoFotoController {
 
     @GetMapping
     public ResponseEntity<?> buscarFoto(@PathVariable Long restauranteId,
-                                                          @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
+                                        @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
         try {
             FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 

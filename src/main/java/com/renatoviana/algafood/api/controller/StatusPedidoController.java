@@ -1,25 +1,12 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.assembler.PedidoInputDTODisassembler;
-import com.renatoviana.algafood.api.assembler.PedidoOutputDTOAssembler;
-import com.renatoviana.algafood.api.assembler.PedidoResumoOutputDTOAssembler;
-import com.renatoviana.algafood.api.model.dto.input.PedidoInputDTO;
-import com.renatoviana.algafood.api.model.dto.output.PedidoOutputDTO;
-import com.renatoviana.algafood.api.model.dto.output.PedidoResumoOutputDTO;
-import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.renatoviana.algafood.domain.exception.NegocioException;
-import com.renatoviana.algafood.domain.model.Pedido;
-import com.renatoviana.algafood.domain.model.Usuario;
-import com.renatoviana.algafood.domain.repository.PedidoRepository;
-import com.renatoviana.algafood.domain.service.EmissaoPedidoService;
 import com.renatoviana.algafood.domain.service.StatusPedidoService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
-
+@Api(tags = "Status dos pedidos")
 @RestController
 @RequestMapping(value = "/pedidos/{codigoPedido}")
 public class StatusPedidoController {

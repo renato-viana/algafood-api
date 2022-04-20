@@ -1,19 +1,11 @@
 package com.renatoviana.algafood.api.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.fasterxml.jackson.annotation.JsonView;
-import com.renatoviana.algafood.api.model.view.RestauranteView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
 import com.renatoviana.algafood.api.assembler.RestauranteInputDTODisassembler;
 import com.renatoviana.algafood.api.assembler.RestauranteOutputDTOAssembler;
 import com.renatoviana.algafood.api.model.dto.input.RestauranteInputDTO;
 import com.renatoviana.algafood.api.model.dto.output.RestauranteOutputDTO;
+import com.renatoviana.algafood.api.model.view.RestauranteView;
 import com.renatoviana.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
@@ -21,7 +13,15 @@ import com.renatoviana.algafood.domain.exception.RestauranteNaoEncontradoExcepti
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+
+@Api(tags = "Restaurantes")
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {

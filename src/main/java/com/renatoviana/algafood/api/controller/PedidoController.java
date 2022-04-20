@@ -16,6 +16,7 @@ import com.renatoviana.algafood.domain.repository.PedidoRepository;
 import com.renatoviana.algafood.domain.filter.PedidoFilter;
 import com.renatoviana.algafood.domain.service.EmissaoPedidoService;
 import com.renatoviana.algafood.infrastructure.repository.spec.PedidoSpecs;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Api(tags = "Pedidos")
 @RestController
 @RequestMapping(value = "/pedidos")
 public class PedidoController {

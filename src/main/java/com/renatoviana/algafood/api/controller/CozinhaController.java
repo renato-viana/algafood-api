@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,6 +29,7 @@ import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.repository.CozinhaRepository;
 import com.renatoviana.algafood.domain.service.CadastroCozinhaService;
 
+@Api(tags = "Cozinhas")
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.repository.UsuarioRepository;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
 
+@Api(tags = "Usuários")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {

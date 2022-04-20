@@ -2,6 +2,7 @@ package com.renatoviana.algafood.api.controller;
 
 import java.util.List;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import com.renatoviana.algafood.api.model.dto.output.PermissaoOutputDTO;
 import com.renatoviana.algafood.domain.model.Grupo;
 import com.renatoviana.algafood.domain.service.CadastroGrupoService;
 
+@Api(tags = "Permissões dos grupos")
 @RestController
 @RequestMapping(value = "/grupos/{grupoId}/permissoes")
 public class GrupoPermissaoController {

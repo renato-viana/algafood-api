@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import com.renatoviana.algafood.domain.model.Grupo;
 import com.renatoviana.algafood.domain.repository.GrupoRepository;
 import com.renatoviana.algafood.domain.service.CadastroGrupoService;
 
+@Api(tags = "Grupos")
 @RestController
 @RequestMapping("/grupos")
 public class GrupoController {

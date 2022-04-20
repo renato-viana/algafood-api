@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import com.renatoviana.algafood.domain.service.CadastroFormaPagamentoService;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+@Api(tags = "Formas de pagamentos")
 @RestController
 @RequestMapping("/formas-pagamento")
 public class FormaPagamentoController {

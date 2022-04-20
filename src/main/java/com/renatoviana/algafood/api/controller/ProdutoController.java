@@ -1,14 +1,5 @@
 package com.renatoviana.algafood.api.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
 import com.renatoviana.algafood.api.assembler.ProdutoInputDTODisassembler;
 import com.renatoviana.algafood.api.assembler.ProdutoOutputDTOAssembler;
 import com.renatoviana.algafood.api.model.dto.input.ProdutoInputDTO;
@@ -18,7 +9,15 @@ import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.ProdutoRepository;
 import com.renatoviana.algafood.domain.service.CadastroProdutoService;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+
+@Api(tags = "Produtos")
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
 public class ProdutoController {
