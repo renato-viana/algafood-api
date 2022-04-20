@@ -1,28 +1,29 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.modelmapper.disassembler.CozinhaModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.CozinhaModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.CozinhaModelRequest;
 import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.CozinhaModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.CozinhaModelRequestDisassembler;
+import com.renatoviana.algafood.api.openapi.controller.CozinhaControllerOpenApi;
+import com.renatoviana.algafood.api.openapi.model.CozinhasModelResponseOpenApi;
 import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.repository.CozinhaRepository;
 import com.renatoviana.algafood.domain.service.CadastroCozinhaService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Cozinhas")
 @RestController
-@RequestMapping("/cozinhas")
-public class CozinhaController {
+@RequestMapping(path = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CozinhaController implements CozinhaControllerOpenApi {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
