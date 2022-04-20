@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.api.controller.openapi;
+package com.renatoviana.algafood.api.openapi.controller;
 
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.model.dto.input.CidadeInputDTO;

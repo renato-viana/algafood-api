@@ -2,7 +2,7 @@ package com.renatoviana.algafood.api.controller;
 
 import com.renatoviana.algafood.api.assembler.CidadeInputDTODisassembler;
 import com.renatoviana.algafood.api.assembler.CidadeOutputDTOAssembler;
-import com.renatoviana.algafood.api.controller.openapi.CidadeControllerOpenApi;
+import com.renatoviana.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.renatoviana.algafood.api.model.dto.input.CidadeInputDTO;
 import com.renatoviana.algafood.api.model.dto.output.CidadeOutputDTO;
 import com.renatoviana.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -12,13 +12,14 @@ import com.renatoviana.algafood.domain.repository.CidadeRepository;
 import com.renatoviana.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cidades")
+@RequestMapping(path = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController implements CidadeControllerOpenApi {
 
     @Autowired
