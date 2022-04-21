@@ -1,12 +1,12 @@
 package com.renatoviana.algafood.api.controller;
 
 import com.google.common.collect.ImmutableMap;
-import com.renatoviana.algafood.api.modelmapper.disassembler.PedidoModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.PedidoModelResponseAssembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.PedidoResumoModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.PedidoModelRequest;
 import com.renatoviana.algafood.api.model.response.PedidoModelResponse;
 import com.renatoviana.algafood.api.model.response.PedidoResumoModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.PedidoModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.PedidoResumoModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.PedidoModelRequestDisassembler;
 import com.renatoviana.algafood.core.data.PageableTranslator;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
@@ -17,6 +17,8 @@ import com.renatoviana.algafood.domain.repository.PedidoRepository;
 import com.renatoviana.algafood.domain.service.EmissaoPedidoService;
 import com.renatoviana.algafood.infrastructure.repository.spec.PedidoSpecs;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -68,6 +70,10 @@ public class PedidoController {
 //        return pedidosWrapper;
 //    }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
+                    name = "campos", paramType = "query", type = "string")
+    })
     @GetMapping
     public Page<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
         pageable = traduzirPageable(pageable);
@@ -83,6 +89,10 @@ public class PedidoController {
         return pedidosResumoOutputPage;
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
+                    name = "campos", paramType = "query", type = "string")
+    })
     @GetMapping("/{codigoPedido}")
     public PedidoModelResponse buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
