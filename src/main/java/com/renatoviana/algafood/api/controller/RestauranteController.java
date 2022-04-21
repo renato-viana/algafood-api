@@ -6,6 +6,7 @@ import com.renatoviana.algafood.api.model.response.RestauranteModelResponse;
 import com.renatoviana.algafood.api.model.view.RestauranteView;
 import com.renatoviana.algafood.api.modelmapper.assembler.RestauranteModelResponseAssembler;
 import com.renatoviana.algafood.api.modelmapper.disassembler.RestauranteModelRequestDisassembler;
+import com.renatoviana.algafood.api.openapi.model.RestauranteBasicoModelResponseOpenApi;
 import com.renatoviana.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
@@ -14,6 +15,9 @@ import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,24 +42,11 @@ public class RestauranteController {
     @Autowired
     private RestauranteModelRequestDisassembler restauranteModelRequestDisassembler;
 
-//	@GetMapping
-//	public MappingJacksonValue listar(@RequestParam(required = false) String projecao) {
-//		List<Restaurante> restaurantes = restauranteRepository.findAll();
-//		List<RestauranteOutputDTO> restaurantesOutputDTO = restauranteModelResponseAssembler.toCollectionDTO(restaurantes);
-//
-//		MappingJacksonValue restaurantesWrapper = new MappingJacksonValue(restaurantesOutputDTO);
-//
-//		restaurantesWrapper.setSerializationView(RestauranteView.Resumo.class);
-//
-//		if("apenas-nome".equals(projecao)) {
-//			restaurantesWrapper.setSerializationView(RestauranteView.ApenasNome.class);
-//		} else if ("completo".equals(projecao)) {
-//			restaurantesWrapper.setSerializationView(null);
-//		}
-//
-//		return restaurantesWrapper;
-//	}
-
+    @ApiOperation(value = "Lista Restaurantes", response = RestauranteBasicoModelResponseOpenApi.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "Nome da projeção de pedidos", allowableValues = "apenas-nome",
+                    name = "projecao", paramType = "query", type = "string")
+    })
     @JsonView(RestauranteView.Resumo.class)
     @GetMapping
     public List<RestauranteModelResponse> listar() {
@@ -64,17 +55,12 @@ public class RestauranteController {
         return restauranteModelResponseAssembler.toCollectionModelResponse(restaurantes);
     }
 
-//	@JsonView(RestauranteView.Resumo.class)
-//	@GetMapping(params = "projecao=resumo")
-//	public List<RestauranteOutputDTO> listarResumido() {
-//		return listar();
-//	}
-//
-//	@JsonView(RestauranteView.ApenasNome.class)
-//	@GetMapping(params = "projecao=apenas-nome")
-//	public List<RestauranteOutputDTO> listarApenasNome() {
-//		return listar();
-//	}
+    @ApiOperation(value = "Lista Restaurantes", hidden = true)
+    @JsonView(RestauranteView.ApenasNome.class)
+    @GetMapping(params = "projecao=apenas-nome")
+    public List<RestauranteModelResponse> listarApenasNome() {
+        return listar();
+    }
 
     @GetMapping("/{restauranteId}")
     public RestauranteModelResponse buscar(@PathVariable Long restauranteId) {
