@@ -12,10 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.AlternateTypeRules;
@@ -49,7 +51,15 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .globalResponseMessage(RequestMethod.POST, globalPostPutResponseMessages())
                 .globalResponseMessage(RequestMethod.PUT, globalPostPutResponseMessages())
                 .globalResponseMessage(RequestMethod.DELETE, globalDeleteResponseMessages())
+                .globalOperationParameters(Arrays.asList(
+                        new ParameterBuilder()
+                                .name("campos")
+                                .description("Nomes das propriedades para filtrar na resposta, separados por vírgula")
+                                .parameterType("query")
+                                .modelRef(new ModelRef("string"))
+                                .build()))
                 .additionalModels(typeResolver.resolve(Problem.class))
+                .ignoredParameterTypes(ServletWebRequest.class)
                 .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, CozinhaModelResponse.class),
@@ -119,10 +129,10 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 new Tag("Permissões dos grupos", "Gerenciar as permissões dos grupos"),
                 new Tag("Pedidos", "Gerenciar os pedidos"),
                 new Tag("Status dos pedidos", "Gerenciar o status dos pedidos"),
-                new Tag("Formas de pagamentos", "Gerenciar as formas de pagamento"),
+                new Tag("Formas de pagamento", "Gerenciar as formas de pagamento"),
                 new Tag("Fotos dos produtos", "Gerenciar as fotos dos produtos"),
                 new Tag("Restaurantes", "Gerenciar os restaurantes"),
-                new Tag("Formas de pagamentos dos restaurantes", "Gerenciar as formas de pagamento do restaurante"),
+                new Tag("Formas de pagamento dos restaurantes", "Gerenciar as formas de pagamento do restaurante"),
                 new Tag("Produtos dos restaurantes", "Gerenciar os produtos do restaurante"),
                 new Tag("Usuários responsáveis dos restaurantes", "Gerenciar os proprietários dos restaurantes"),
                 new Tag("Estados", "Gerenciar os estados"),

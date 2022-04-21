@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "Formas de pagamentos dos restaurantes")
+@Api(tags = "Formas de pagamento dos restaurantes")
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/formas-pagamento")
 public class RestauranteFormaPagamentoController {

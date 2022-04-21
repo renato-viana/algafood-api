@@ -1,16 +1,17 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.modelmapper.disassembler.FormaPagamentoModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.FormaPagamentoModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.FormaPagamentoModelRequest;
 import com.renatoviana.algafood.api.model.response.FormaPagamentoModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.FormaPagamentoModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.FormaPagamentoModelRequestDisassembler;
+import com.renatoviana.algafood.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.renatoviana.algafood.domain.model.FormaPagamento;
 import com.renatoviana.algafood.domain.repository.FormaPagamentoRepository;
 import com.renatoviana.algafood.domain.service.CadastroFormaPagamentoService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -21,10 +22,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Api(tags = "Formas de pagamentos")
 @RestController
-@RequestMapping("/formas-pagamento")
-public class FormaPagamentoController {
+@RequestMapping(path = "/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
     @Autowired
     private FormaPagamentoRepository formaPagamentoRepository;
