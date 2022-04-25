@@ -34,7 +34,7 @@ public interface FormaPagamentoControllerOpenApi {
             @ApiParam(name = "corpo", value = "Representação de uma nova forma de pagamento", required = true)
                     FormaPagamentoModelRequest formaPagamentoModelRequest);
 
-    @ApiOperation("Atualiza uma cidade por ID")
+    @ApiOperation("Atualiza uma forma de pagamento por ID")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Forma de pagamento atualizada"),
             @ApiResponse(code = 404, message = "Forma de pagamento não encontrada", response = Problem.class)

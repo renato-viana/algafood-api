@@ -1,5 +1,6 @@
 package com.renatoviana.algafood.api.controller;
 
+import com.renatoviana.algafood.api.openapi.controller.EstatisticasControllerOpenApi;
 import com.renatoviana.algafood.domain.filter.VendaDiariaFilter;
 import com.renatoviana.algafood.domain.model.dto.VendaDiaria;
 import com.renatoviana.algafood.domain.service.VendaJasperReportsService;
@@ -16,10 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api(tags = "Estatísticas")
 @RestController
-@RequestMapping("/estatisticas")
-public class EstatisticasController {
+@RequestMapping(path = "/estatisticas")
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
     @Autowired
     private VendaQueryService vendaQueryService;
@@ -34,7 +34,7 @@ public class EstatisticasController {
     }
 
     @GetMapping(path = "vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> consultarVendasDiariasPDF(VendaDiariaFilter filtro,
+    public ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro,
              @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
 
         byte[] bytesPdf = vendaJasperReportsService.emitirVendasDiarias(filtro, timeOffset);
