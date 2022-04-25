@@ -1,9 +1,6 @@
 package com.renatoviana.algafood.api.openapi.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
-import com.renatoviana.algafood.api.model.view.RestauranteView;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

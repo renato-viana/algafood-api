@@ -1,15 +1,15 @@
 package com.renatoviana.algafood.api.controller;
 
+import com.renatoviana.algafood.api.openapi.controller.StatusPedidoControllerOpenApi;
 import com.renatoviana.algafood.domain.service.StatusPedidoService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "Status dos pedidos")
 @RestController
-@RequestMapping(value = "/pedidos/{codigoPedido}")
-public class StatusPedidoController {
+@RequestMapping(path = "/pedidos/{codigoPedido}", produces = MediaType.APPLICATION_JSON_VALUE)
+public class StatusPedidoController implements StatusPedidoControllerOpenApi {
 
     @Autowired
     StatusPedidoService statusPedidoService;

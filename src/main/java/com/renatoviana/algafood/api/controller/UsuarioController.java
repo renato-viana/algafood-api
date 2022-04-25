@@ -1,30 +1,21 @@
 package com.renatoviana.algafood.api.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.renatoviana.algafood.api.modelmapper.disassembler.UsuarioModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.UsuarioModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.SenhaModelRequest;
 import com.renatoviana.algafood.api.model.request.UsuarioComSenhaModelRequest;
 import com.renatoviana.algafood.api.model.request.UsuarioModelRequest;
 import com.renatoviana.algafood.api.model.response.UsuarioModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.UsuarioModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.UsuarioModelRequestDisassembler;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.repository.UsuarioRepository;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @Api(tags = "Usuários")
 @RestController

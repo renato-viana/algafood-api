@@ -1,8 +1,9 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.modelmapper.assembler.FotoProdutoModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.FotoProdutoModelRequest;
 import com.renatoviana.algafood.api.model.response.FotoProdutoModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.FotoProdutoModelResponseAssembler;
+import com.renatoviana.algafood.api.openapi.controller.ProdutoFotoControllerOpenApi;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.model.FotoProduto;
 import com.renatoviana.algafood.domain.model.Produto;
@@ -10,7 +11,6 @@ import com.renatoviana.algafood.domain.service.CadastroProdutoService;
 import com.renatoviana.algafood.domain.service.CatalogoFotoProdutoService;
 import com.renatoviana.algafood.domain.service.FotoStorageService;
 import com.renatoviana.algafood.domain.service.FotoStorageService.FotoRecuperada;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -25,10 +25,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
-@Api(tags = "Fotos dos produtos")
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class ProdutoFotoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 
     @Autowired
     CatalogoFotoProdutoService catalogoFotoProdutoService;
@@ -42,16 +41,17 @@ public class ProdutoFotoController {
     @Autowired
     private FotoStorageService fotoStorageService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public FotoProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
         return fotoProdutoModelResponseAssembler.toModelResponse(fotoProduto);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<?> buscarFoto(@PathVariable Long restauranteId,
-                                        @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
+       @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
+            throws HttpMediaTypeNotAcceptableException {
         try {
             FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 

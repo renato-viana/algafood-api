@@ -1,26 +1,26 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.modelmapper.disassembler.ProdutoModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.ProdutoModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.ProdutoModelRequest;
 import com.renatoviana.algafood.api.model.response.ProdutoModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.ProdutoModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.ProdutoModelRequestDisassembler;
+import com.renatoviana.algafood.api.openapi.controller.ProdutoControllerOpenApi;
 import com.renatoviana.algafood.domain.model.Produto;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.ProdutoRepository;
 import com.renatoviana.algafood.domain.service.CadastroProdutoService;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Produtos")
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos")
-public class ProdutoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ProdutoController implements ProdutoControllerOpenApi {
 
     @Autowired
     private ProdutoRepository produtoRepository;

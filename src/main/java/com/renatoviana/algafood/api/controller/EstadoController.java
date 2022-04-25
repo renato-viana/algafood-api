@@ -1,24 +1,24 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.modelmapper.disassembler.EstadoModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.EstadoModelResponseAssembler;
 import com.renatoviana.algafood.api.model.request.EstadoModelRequest;
 import com.renatoviana.algafood.api.model.response.EstadoModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.EstadoModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.EstadoModelRequestDisassembler;
+import com.renatoviana.algafood.api.openapi.controller.EstadoControllerOpenApi;
 import com.renatoviana.algafood.domain.model.Estado;
 import com.renatoviana.algafood.domain.repository.EstadoRepository;
 import com.renatoviana.algafood.domain.service.CadastroEstadoService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Estados")
 @RestController
-@RequestMapping("/estados")
-public class EstadoController {
+@RequestMapping(path = "/estados", produces = MediaType.APPLICATION_JSON_VALUE)
+public class EstadoController implements EstadoControllerOpenApi {
 
     @Autowired
     private EstadoRepository estadoRepository;
