@@ -12,6 +12,7 @@ import com.renatoviana.algafood.domain.model.Cidade;
 import com.renatoviana.algafood.domain.repository.CidadeRepository;
 import com.renatoviana.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,13 @@ public class CidadeController implements CidadeControllerOpenApi {
             @PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-        return cidadeModelResponseAssembler.toModelResponse(cidade);
+        CidadeModelResponse cidadeModelResponse = cidadeModelResponseAssembler.toModelResponse(cidade);
+
+        cidadeModelResponse.add(Link.of("http://api.algafood.local:8080/cidades/1"));
+        cidadeModelResponse.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
+        cidadeModelResponse.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
+
+        return cidadeModelResponse;
     }
 
     @Override
