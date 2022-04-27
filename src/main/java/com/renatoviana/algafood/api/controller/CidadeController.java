@@ -1,9 +1,10 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.modelmapper.disassembler.CidadeModelRequestDisassembler;
-import com.renatoviana.algafood.api.modelmapper.assembler.CidadeModelResponseAssembler;
+import com.renatoviana.algafood.api.ResourceUriHelper;
 import com.renatoviana.algafood.api.model.request.CidadeModelRequest;
 import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
+import com.renatoviana.algafood.api.modelmapper.assembler.CidadeModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.disassembler.CidadeModelRequestDisassembler;
 import com.renatoviana.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.renatoviana.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
@@ -34,6 +35,7 @@ public class CidadeController implements CidadeControllerOpenApi {
     @Autowired
     private CidadeModelRequestDisassembler cidadeModelRequestDisassembler;
 
+    @Override
     @GetMapping
     public List<CidadeModelResponse> listar() {
         List<Cidade> cidades = cidadeRepository.findAll();
@@ -41,6 +43,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         return cidadeModelResponseAssembler.toCollectionModelResponse(cidades);
     }
 
+    @Override
     @GetMapping("/{cidadeId}")
     public CidadeModelResponse buscar(
             @PathVariable Long cidadeId) {
@@ -49,6 +52,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         return cidadeModelResponseAssembler.toModelResponse(cidade);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CidadeModelResponse adicionar(
@@ -58,12 +62,17 @@ public class CidadeController implements CidadeControllerOpenApi {
 
             cidade = cadastroCidadeService.salvar(cidade);
 
-            return cidadeModelResponseAssembler.toModelResponse(cidade);
+            CidadeModelResponse cidadeModelResponse = cidadeModelResponseAssembler.toModelResponse(cidade);
+
+            ResourceUriHelper.addUriInResponseHeader(cidadeModelResponse.getId());
+
+            return cidadeModelResponse;
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
+    @Override
     @PutMapping("/{cidadeId}")
     public CidadeModelResponse Atualizar(
             @PathVariable Long cidadeId,
@@ -83,6 +92,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 
     }
 
+    @Override
     @DeleteMapping("/{cidadeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(
