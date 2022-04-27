@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.core.openapi;
+package com.renatoviana.algafood.core.springfox;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
