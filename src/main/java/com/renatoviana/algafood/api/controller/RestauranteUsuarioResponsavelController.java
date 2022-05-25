@@ -6,6 +6,7 @@ import com.renatoviana.algafood.api.openapi.controller.RestauranteUsuarioRespons
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,10 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     private UsuarioModelResponseAssembler usuarioOutputDTOAssembler;
 
     @GetMapping
-    public List<UsuarioModelResponse> listar(@PathVariable Long restauranteId) {
+    public CollectionModel<UsuarioModelResponse> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-        return usuarioOutputDTOAssembler.toCollectionDTO(restaurante.getResponsaveis());
+        return usuarioOutputDTOAssembler.toCollectionModel(restaurante.getResponsaveis());
     }
 
     @DeleteMapping("/{usuarioId}")

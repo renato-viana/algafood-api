@@ -11,6 +11,7 @@ import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.repository.UsuarioRepository;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -29,33 +30,33 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     private CadastroUsuarioService cadastroUsuarioService;
 
     @Autowired
-    private UsuarioModelResponseAssembler usuarioOutputDTOAssembler;
+    private UsuarioModelResponseAssembler usuarioModelResponseAssembler;
 
     @Autowired
-    private UsuarioModelRequestDisassembler usuarioInputDTODisassembler;
+    private UsuarioModelRequestDisassembler usuarioModelRequestDisassembler;
 
     @GetMapping
-    public List<UsuarioModelResponse> listar() {
+    public CollectionModel<UsuarioModelResponse> listar() {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
-        return usuarioOutputDTOAssembler.toCollectionDTO(usuarios);
+        return usuarioModelResponseAssembler.toCollectionModel(usuarios);
     }
 
     @GetMapping("/{usuarioId}")
     public UsuarioModelResponse buscar(@PathVariable Long usuarioId) {
         Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
-        return usuarioOutputDTOAssembler.toDTO(usuario);
+        return usuarioModelResponseAssembler.toModel(usuario);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioModelResponse adicionar(@RequestBody @Valid UsuarioComSenhaModelRequest usuarioInput) {
-        Usuario usuario = usuarioInputDTODisassembler.toDomainObject(usuarioInput);
+        Usuario usuario = usuarioModelRequestDisassembler.toDomainObject(usuarioInput);
 
         usuario = cadastroUsuarioService.salvar(usuario);
 
-        return usuarioOutputDTOAssembler.toDTO(usuario);
+        return usuarioModelResponseAssembler.toModel(usuario);
     }
 
     @PutMapping("/{usuarioId}")
@@ -63,11 +64,11 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
-        usuarioInputDTODisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
+        usuarioModelRequestDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
 
         usuarioAtual = cadastroUsuarioService.salvar(usuarioAtual);
 
-        return usuarioOutputDTOAssembler.toDTO(usuarioAtual);
+        return usuarioModelResponseAssembler.toModel(usuarioAtual);
     }
 
     @PutMapping("/{usuarioId}/senha")
