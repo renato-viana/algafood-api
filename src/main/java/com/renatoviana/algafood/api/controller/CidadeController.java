@@ -12,7 +12,7 @@ import com.renatoviana.algafood.domain.model.Cidade;
 import com.renatoviana.algafood.domain.repository.CidadeRepository;
 import com.renatoviana.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -41,10 +41,24 @@ public class CidadeController implements CidadeControllerOpenApi {
 
     @Override
     @GetMapping
-    public List<CidadeModelResponse> listar() {
+    public CollectionModel<CidadeModelResponse> listar() {
         List<Cidade> cidades = cidadeRepository.findAll();
 
-        return cidadeModelResponseAssembler.toCollectionModelResponse(cidades);
+        List<CidadeModelResponse> cidadesModelResponse = cidadeModelResponseAssembler.toCollectionModelResponse(cidades);
+
+        cidadesModelResponse.forEach(cidadeModelResponse -> {
+                    cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
+                            .buscar(cidadeModelResponse.getId())).withSelfRel());
+
+                    cidadeModelResponse.getEstado().add(linkTo(methodOn(EstadoController.class)
+                            .buscar(cidadeModelResponse.getEstado().getId())).withSelfRel());
+                }
+        );
+
+        CollectionModel<CidadeModelResponse> cidadesCollectionModelResponse = CollectionModel.of(cidadesModelResponse);
+
+        cidadesCollectionModelResponse.add(linkTo(CidadeController.class).withSelfRel());
+        return cidadesCollectionModelResponse;
     }
 
     @Override

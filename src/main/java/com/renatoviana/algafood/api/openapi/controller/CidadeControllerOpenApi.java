@@ -4,14 +4,13 @@ import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.model.request.CidadeModelRequest;
 import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import io.swagger.annotations.*;
-
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 @Api(tags = "Cidades")
 public interface CidadeControllerOpenApi {
 
     @ApiOperation("Lista as cidades")
-    List<CidadeModelResponse> listar();
+    CollectionModel<CidadeModelResponse> listar();
 
     @ApiOperation("Busca uma cidade por ID")
     @ApiResponses({
