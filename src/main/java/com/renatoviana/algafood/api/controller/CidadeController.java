@@ -12,6 +12,7 @@ import com.renatoviana.algafood.domain.model.Cidade;
 import com.renatoviana.algafood.domain.repository.CidadeRepository;
 import com.renatoviana.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,16 +55,14 @@ public class CidadeController implements CidadeControllerOpenApi {
 
         CidadeModelResponse cidadeModelResponse = cidadeModelResponseAssembler.toModelResponse(cidade);
 
-        cidadeModelResponse.add(linkTo(CidadeController.class)
-                .slash(cidadeModelResponse.getId())
-                .withSelfRel());
+        cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
+                .buscar(cidadeModelResponse.getId())).withSelfRel());
 
-        cidadeModelResponse.add(linkTo(CidadeController.class)
-                .withRel("cidades"));
+        cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
+                .listar()).withRel("cidades"));
 
-        cidadeModelResponse.getEstado().add(linkTo(EstadoController.class)
-                .slash(cidadeModelResponse.getEstado().getId())
-                .withSelfRel());
+        cidadeModelResponse.getEstado().add(linkTo(methodOn(EstadoController.class)
+                .buscar(cidadeModelResponse.getEstado().getId())).withSelfRel());
 
         return cidadeModelResponse;
     }
