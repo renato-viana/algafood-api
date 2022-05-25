@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping(path = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController implements CidadeControllerOpenApi {
@@ -44,21 +41,7 @@ public class CidadeController implements CidadeControllerOpenApi {
     public CollectionModel<CidadeModelResponse> listar() {
         List<Cidade> cidades = cidadeRepository.findAll();
 
-        List<CidadeModelResponse> cidadesModelResponse = cidadeModelResponseAssembler.toCollectionModelResponse(cidades);
-
-        cidadesModelResponse.forEach(cidadeModelResponse -> {
-                    cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
-                            .buscar(cidadeModelResponse.getId())).withSelfRel());
-
-                    cidadeModelResponse.getEstado().add(linkTo(methodOn(EstadoController.class)
-                            .buscar(cidadeModelResponse.getEstado().getId())).withSelfRel());
-                }
-        );
-
-        CollectionModel<CidadeModelResponse> cidadesCollectionModelResponse = CollectionModel.of(cidadesModelResponse);
-
-        cidadesCollectionModelResponse.add(linkTo(CidadeController.class).withSelfRel());
-        return cidadesCollectionModelResponse;
+        return cidadeModelResponseAssembler.toCollectionModel(cidades);
     }
 
     @Override
@@ -67,18 +50,7 @@ public class CidadeController implements CidadeControllerOpenApi {
             @PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-        CidadeModelResponse cidadeModelResponse = cidadeModelResponseAssembler.toModelResponse(cidade);
-
-        cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
-                .buscar(cidadeModelResponse.getId())).withSelfRel());
-
-        cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
-                .listar()).withRel("cidades"));
-
-        cidadeModelResponse.getEstado().add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeModelResponse.getEstado().getId())).withSelfRel());
-
-        return cidadeModelResponse;
+        return cidadeModelResponseAssembler.toModel(cidade);
     }
 
     @Override
@@ -91,7 +63,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 
             cidade = cadastroCidadeService.salvar(cidade);
 
-            CidadeModelResponse cidadeModelResponse = cidadeModelResponseAssembler.toModelResponse(cidade);
+            CidadeModelResponse cidadeModelResponse = cidadeModelResponseAssembler.toModel(cidade);
 
             ResourceUriHelper.addUriInResponseHeader(cidadeModelResponse.getId());
 
@@ -114,7 +86,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 
             cidadeAtual = cadastroCidadeService.salvar(cidadeAtual);
 
-            return cidadeModelResponseAssembler.toModelResponse(cidadeAtual);
+            return cidadeModelResponseAssembler.toModel(cidadeAtual);
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
