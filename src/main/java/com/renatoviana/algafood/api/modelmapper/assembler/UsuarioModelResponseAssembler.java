@@ -1,6 +1,5 @@
 package com.renatoviana.algafood.api.modelmapper.assembler;
 
-import com.renatoviana.algafood.api.controller.EstadoController;
 import com.renatoviana.algafood.api.controller.UsuarioController;
 import com.renatoviana.algafood.api.controller.UsuarioGrupoController;
 import com.renatoviana.algafood.api.model.response.UsuarioModelResponse;

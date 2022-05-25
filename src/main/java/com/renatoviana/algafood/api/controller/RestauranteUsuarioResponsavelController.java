@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping(path = "/restaurantes/{restauranteId}/responsaveis", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteUsuarioResponsavelController implements RestauranteUsuarioResponsavelControllerOpenApi {
@@ -21,13 +24,16 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     private CadastroRestauranteService cadastroRestauranteService;
 
     @Autowired
-    private UsuarioModelResponseAssembler usuarioOutputDTOAssembler;
+    private UsuarioModelResponseAssembler usuarioModelResponseAssembler;
 
     @GetMapping
     public CollectionModel<UsuarioModelResponse> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-        return usuarioOutputDTOAssembler.toCollectionModel(restaurante.getResponsaveis());
+        return usuarioModelResponseAssembler.toCollectionModel(restaurante.getResponsaveis())
+                .removeLinks()
+                .add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class).listar(restauranteId))
+                        .withSelfRel());
     }
 
     @DeleteMapping("/{usuarioId}")

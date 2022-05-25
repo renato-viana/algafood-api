@@ -9,6 +9,7 @@ import com.renatoviana.algafood.domain.model.Estado;
 import com.renatoviana.algafood.domain.repository.EstadoRepository;
 import com.renatoviana.algafood.domain.service.CadastroEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +34,17 @@ public class EstadoController implements EstadoControllerOpenApi {
     private EstadoModelRequestDisassembler estadoModelRequestDisassembler;
 
     @GetMapping
-    public List<EstadoModelResponse> listar() {
+    public CollectionModel<EstadoModelResponse> listar() {
         List<Estado> estados = estadoRepository.findAll();
 
-        return estadoModelResponseAssembler.toCollectionModelResponse(estados);
+        return estadoModelResponseAssembler.toCollectionModel(estados);
     }
 
     @GetMapping("/{estadoId}")
     public EstadoModelResponse buscar(@PathVariable Long estadoId) {
         Estado estado = cadastroEstadoService.buscarOuFalhar(estadoId);
 
-        return estadoModelResponseAssembler.toModelResponse(estado);
+        return estadoModelResponseAssembler.toModel(estado);
     }
 
     @PostMapping
@@ -53,7 +54,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 
         estado = cadastroEstadoService.salvar(estado);
 
-        return estadoModelResponseAssembler.toModelResponse(estado);
+        return estadoModelResponseAssembler.toModel(estado);
     }
 
     @PutMapping("/{estadoId}")
@@ -65,7 +66,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 
         estadoAtual = cadastroEstadoService.salvar(estadoAtual);
 
-        return estadoModelResponseAssembler.toModelResponse(estadoAtual);
+        return estadoModelResponseAssembler.toModel(estadoAtual);
     }
 
     @DeleteMapping("/{estadoId}")
