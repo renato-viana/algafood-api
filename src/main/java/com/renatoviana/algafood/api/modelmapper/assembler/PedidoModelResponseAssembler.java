@@ -29,11 +29,17 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
 
         pedidoModelResponse.add(resourceLinkHelper.linkToPedidos());
 
-        pedidoModelResponse.add(resourceLinkHelper.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+        if (pedido.podeSerConfirmado()) {
+            pedidoModelResponse.add(resourceLinkHelper.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+        }
 
-        pedidoModelResponse.add(resourceLinkHelper.linkToEntregaPedido(pedido.getCodigo(), "cancelar"));
+        if (pedido.podeSerEntregue()) {
+            pedidoModelResponse.add(resourceLinkHelper.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+        }
 
-        pedidoModelResponse.add(resourceLinkHelper.linkToCancelamentoPedido(pedido.getCodigo(), "entregar"));
+        if (pedido.podeSerCancelado()) {
+            pedidoModelResponse.add(resourceLinkHelper.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+        }
 
         pedidoModelResponse
                 .getRestaurante().add(

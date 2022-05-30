@@ -1,21 +1,19 @@
 package com.renatoviana.algafood.domain.model;
 
+import com.renatoviana.algafood.domain.event.PedidoCanceladoEvent;
+import com.renatoviana.algafood.domain.event.PedidoConfirmadoEvent;
+import com.renatoviana.algafood.domain.exception.NegocioException;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import javax.persistence.*;
-
-import com.renatoviana.algafood.domain.event.PedidoCanceladoEvent;
-import com.renatoviana.algafood.domain.event.PedidoConfirmadoEvent;
-import com.renatoviana.algafood.domain.exception.NegocioException;
-import org.hibernate.annotations.CreationTimestamp;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
@@ -91,6 +89,18 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
         setDataCancelamento(OffsetDateTime.now());
 
         registerEvent(new PedidoCanceladoEvent(this));
+    }
+
+    public Boolean podeSerConfirmado() {
+        return getStatus().podeAlterarPara(StatusPedido.CONFIRMADO);
+    }
+
+    public Boolean podeSerEntregue() {
+        return getStatus().podeAlterarPara(StatusPedido.ENTREGUE);
+    }
+
+    public Boolean podeSerCancelado() {
+        return getStatus().podeAlterarPara(StatusPedido.CANCELADO);
     }
 
     private void setStatus(StatusPedido novoStatus) {
