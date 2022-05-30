@@ -5,6 +5,11 @@ import com.renatoviana.algafood.api.model.response.PedidoModelResponse;
 import com.renatoviana.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.TemplateVariable.VariableType;
+import org.springframework.hateoas.TemplateVariables;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +31,16 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
         PedidoModelResponse pedidoModelResponse = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModelResponse);
 
-        pedidoModelResponse.add(linkTo(PedidoController.class).withRel("pedidos"));
+        String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
+
+        TemplateVariables pageVariables = new TemplateVariables(
+                new TemplateVariable("page", VariableType.REQUEST_PARAM),
+                new TemplateVariable("size", VariableType.REQUEST_PARAM),
+                new TemplateVariable("sort", VariableType.REQUEST_PARAM)
+        );
+
+        pedidoModelResponse.add(Link.of(UriTemplate.of(pedidosUrl, pageVariables),
+                "pedidos"));
 
         pedidoModelResponse.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
                 .buscar(pedido.getRestaurante().getId())).withSelfRel());
