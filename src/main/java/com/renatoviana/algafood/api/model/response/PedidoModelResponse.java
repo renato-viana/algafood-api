@@ -42,7 +42,7 @@ public class PedidoModelResponse extends RepresentationModel<PedidoModelResponse
     @ApiModelProperty(example = "2019-12-01T20:35:00Z")
     private OffsetDateTime dataCancelamento;
 
-    private RestauranteResumoModelResponse restaurante;
+    private RestauranteApenasNomeModelResponse restaurante;
 
     private UsuarioModelResponse cliente;
 

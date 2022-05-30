@@ -1,9 +1,11 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.renatoviana.algafood.api.model.request.RestauranteModelRequest;
+import com.renatoviana.algafood.api.model.response.RestauranteApenasNomeModelResponse;
+import com.renatoviana.algafood.api.model.response.RestauranteBasicoModelResponse;
 import com.renatoviana.algafood.api.model.response.RestauranteModelResponse;
-import com.renatoviana.algafood.api.model.view.RestauranteView;
+import com.renatoviana.algafood.api.modelmapper.assembler.RestauranteApenasNomeModelResponseAssembler;
+import com.renatoviana.algafood.api.modelmapper.assembler.RestauranteBasicoModelResponseAssembler;
 import com.renatoviana.algafood.api.modelmapper.assembler.RestauranteModelResponseAssembler;
 import com.renatoviana.algafood.api.modelmapper.disassembler.RestauranteModelRequestDisassembler;
 import com.renatoviana.algafood.api.openapi.controller.RestauranteControllerOpenApi;
@@ -15,8 +17,10 @@ import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,25 +42,31 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     @Autowired
     private RestauranteModelRequestDisassembler restauranteModelRequestDisassembler;
 
-    @JsonView(RestauranteView.Resumo.class)
-    @GetMapping
-    public List<RestauranteModelResponse> listar() {
-        List<Restaurante> restaurantes = restauranteRepository.findAll();
+    @Autowired
+    private RestauranteBasicoModelResponseAssembler restauranteBasicoModelResponseAssembler;
 
-        return restauranteModelResponseAssembler.toCollectionModelResponse(restaurantes);
+    @Autowired
+    private RestauranteApenasNomeModelResponseAssembler restauranteApenasNomeModelResponseAssembler;
+
+    //    @JsonView(RestauranteView.Resumo.class)
+    @GetMapping
+    public CollectionModel<RestauranteBasicoModelResponse> listar() {
+        return restauranteBasicoModelResponseAssembler
+                .toCollectionModel(restauranteRepository.findAll());
     }
 
-    @JsonView(RestauranteView.ApenasNome.class)
+    //    @JsonView(RestauranteView.ApenasNome.class)
     @GetMapping(params = "projecao=apenas-nome")
-    public List<RestauranteModelResponse> listarApenasNomes() {
-        return listar();
+    public CollectionModel<RestauranteApenasNomeModelResponse> listarApenasNomes() {
+        return restauranteApenasNomeModelResponseAssembler
+                .toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping("/{restauranteId}")
     public RestauranteModelResponse buscar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-        return restauranteModelResponseAssembler.toModelResponse(restaurante);
+        return restauranteModelResponseAssembler.toModel(restaurante);
     }
 
     @PostMapping
@@ -67,7 +77,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
             restaurante = cadastroRestauranteService.salvar(restaurante);
 
-            return restauranteModelResponseAssembler.toModelResponse(restaurante);
+            return restauranteModelResponseAssembler.toModel(restaurante);
         } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -83,7 +93,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
             restauranteAtual = cadastroRestauranteService.salvar(restauranteAtual);
 
-            return restauranteModelResponseAssembler.toModelResponse(restauranteAtual);
+            return restauranteModelResponseAssembler.toModel(restauranteAtual);
         } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -97,8 +107,10 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
     @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
         cadastroRestauranteService.ativar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/ativacoes")
@@ -114,8 +126,10 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
     @DeleteMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
         cadastroRestauranteService.inativar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/ativacoes")
@@ -131,13 +145,17 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
     @PutMapping("/{restauranteId}/abertura")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void abrir(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
         cadastroRestauranteService.abrir(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{restauranteId}/fechamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void fechar(@PathVariable Long restauranteId) {
+    public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
         cadastroRestauranteService.fechar(restauranteId);
+
+        return ResponseEntity.noContent().build();
     }
 }

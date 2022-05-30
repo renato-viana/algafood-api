@@ -2,7 +2,7 @@ package com.renatoviana.algafood.api.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.controller.RestauranteController;
 import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
-import com.renatoviana.algafood.api.model.response.RestauranteModelResponse;
+import com.renatoviana.algafood.api.model.response.RestauranteBasicoModelResponse;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,8 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 @Component
-public class RestauranteModelResponseAssembler
-        extends RepresentationModelAssemblerSupport<Restaurante, RestauranteModelResponse> {
+public class RestauranteBasicoModelResponseAssembler extends RepresentationModelAssemblerSupport<Restaurante,
+        RestauranteBasicoModelResponse> {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -20,13 +20,15 @@ public class RestauranteModelResponseAssembler
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
-    public RestauranteModelResponseAssembler() {
-        super(RestauranteController.class, RestauranteModelResponse.class);
+    public RestauranteBasicoModelResponseAssembler() {
+        super(RestauranteController.class, RestauranteBasicoModelResponse.class);
     }
 
     @Override
-    public RestauranteModelResponse toModel(Restaurante restaurante) {
-        RestauranteModelResponse restauranteModelResponse = createModelWithId(restaurante.getId(), restaurante);
+    public RestauranteBasicoModelResponse
+    toModel(Restaurante restaurante) {
+        RestauranteBasicoModelResponse
+                restauranteModelResponse = createModelWithId(restaurante.getId(), restaurante);
 
         modelMapper.map(restaurante, restauranteModelResponse);
 
@@ -39,24 +41,11 @@ public class RestauranteModelResponseAssembler
                         resourceLinkHelper
                                 .linkToCozinha(restaurante.getCozinha().getId()));
 
-        restauranteModelResponse
-                .getEndereco().getCidade().add(
-                        resourceLinkHelper
-                                .linkToCidade(restaurante.getEndereco().getCidade().getId()));
-
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestauranteFormasPagamento(restaurante.getId(), "formas-pagamento"));
-
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestauranteResponsaveis(restaurante.getId(), "responsaveis"));
-
         return restauranteModelResponse;
     }
 
     @Override
-    public CollectionModel<RestauranteModelResponse>
+    public CollectionModel<RestauranteBasicoModelResponse>
     toCollectionModel(Iterable<? extends Restaurante> entities) {
         return super.toCollectionModel(entities)
                 .add(resourceLinkHelper
