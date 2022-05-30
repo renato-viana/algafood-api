@@ -8,6 +8,7 @@ import com.renatoviana.algafood.api.modelmapper.assembler.PedidoModelResponseAss
 import com.renatoviana.algafood.api.modelmapper.assembler.PedidoResumoModelResponseAssembler;
 import com.renatoviana.algafood.api.modelmapper.disassembler.PedidoModelRequestDisassembler;
 import com.renatoviana.algafood.api.openapi.controller.PedidoControllerOpenApi;
+import com.renatoviana.algafood.core.data.PageWrapper;
 import com.renatoviana.algafood.core.data.PageableTranslator;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
@@ -53,11 +54,13 @@ public class PedidoController implements PedidoControllerOpenApi {
 
     @GetMapping
     public PagedModel<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro,
-        @PageableDefault(size = 10) Pageable pageable) {
-        pageable = traduzirPageable(pageable);
+                                                           @PageableDefault(size = 10) Pageable pageable) {
+        Pageable pageableTraduzido = traduzirPageable(pageable);
 
         Page<Pedido> pedidosPage = pedidoRepository.findAll(
-                PedidoSpecs.usandoFiltro(filtro), pageable);
+                PedidoSpecs.usandoFiltro(filtro), pageableTraduzido);
+
+        pedidosPage = new PageWrapper<>(pedidosPage, pageable);
 
         return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelResponseAssembler);
     }
@@ -71,9 +74,9 @@ public class PedidoController implements PedidoControllerOpenApi {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PedidoModelResponse adicionar(@Valid @RequestBody PedidoModelRequest pedidoInput) {
+    public PedidoModelResponse adicionar(@Valid @RequestBody PedidoModelRequest pedidoModelRequest) {
         try {
-            Pedido novoPedido = pedidoModelRequestDisassembler.toDomainObject(pedidoInput);
+            Pedido novoPedido = pedidoModelRequestDisassembler.toDomainObject(pedidoModelRequest);
 
             // TODO pegar usuário autenticado
             novoPedido.setCliente(new Usuario());
