@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.modelmapper.assembler;
 import com.renatoviana.algafood.api.controller.PedidoController;
 import com.renatoviana.algafood.api.controller.RestauranteController;
 import com.renatoviana.algafood.api.controller.UsuarioController;
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.PedidoResumoModelResponse;
 import com.renatoviana.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
@@ -20,6 +21,9 @@ public class PedidoResumoModelResponseAssembler extends RepresentationModelAssem
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
     public PedidoResumoModelResponseAssembler() {
         super(PedidoController.class, PedidoResumoModelResponse.class);
     }
@@ -29,13 +33,11 @@ public class PedidoResumoModelResponseAssembler extends RepresentationModelAssem
         PedidoResumoModelResponse pedidoModelResponse = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModelResponse);
 
-        pedidoModelResponse.add(linkTo(PedidoController.class).withRel("pedidos"));
+        pedidoModelResponse.add(resourceLinkHelper.linkToPedidos());
 
-        pedidoModelResponse.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
-                .buscar(pedido.getRestaurante().getId())).withSelfRel());
+        pedidoModelResponse.getRestaurante().add(resourceLinkHelper.linkToRestaurante(pedido.getRestaurante().getId()));
 
-        pedidoModelResponse.getCliente().add(linkTo(methodOn(UsuarioController.class)
-                .buscar(pedido.getCliente().getId())).withSelfRel());
+        pedidoModelResponse.getCliente().add(resourceLinkHelper.linkToUsuario(pedido.getCliente().getId()));
 
         return pedidoModelResponse;
     }

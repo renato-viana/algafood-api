@@ -1,6 +1,7 @@
 package com.renatoviana.algafood.api.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.controller.CozinhaController;
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
 import com.renatoviana.algafood.domain.model.Cozinha;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,9 @@ public class CozinhaModelResponseAssembler extends RepresentationModelAssemblerS
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
     public CozinhaModelResponseAssembler() {
         super(CozinhaController.class, CozinhaModelResponse.class);
     }
@@ -28,7 +32,7 @@ public class CozinhaModelResponseAssembler extends RepresentationModelAssemblerS
         CozinhaModelResponse cozinhaModelResponse = createModelWithId(cozinha.getId(), cozinha);
         modelMapper.map(cozinha, cozinhaModelResponse);
 
-        cozinhaModelResponse.add(linkTo(CozinhaController.class).withRel("cozinhas"));
+        cozinhaModelResponse.add(resourceLinkHelper.linkToCozinhas("cozinhas"));
 
         return cozinhaModelResponse;
     }

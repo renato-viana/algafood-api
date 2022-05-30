@@ -1,7 +1,7 @@
 package com.renatoviana.algafood.api.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.controller.CidadeController;
-import com.renatoviana.algafood.api.controller.EstadoController;
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import com.renatoviana.algafood.domain.model.Cidade;
 import org.modelmapper.ModelMapper;
@@ -11,13 +11,15 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class CidadeModelResponseAssembler extends RepresentationModelAssemblerSupport<Cidade, CidadeModelResponse> {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
 
     public CidadeModelResponseAssembler() {
         super(CidadeController.class, CidadeModelResponse.class);
@@ -29,11 +31,9 @@ public class CidadeModelResponseAssembler extends RepresentationModelAssemblerSu
 
         modelMapper.map(cidade, cidadeModelResponse);
 
-        cidadeModelResponse.add(linkTo(methodOn(CidadeController.class)
-                .listar()).withRel("cidades"));
+        cidadeModelResponse.add(resourceLinkHelper.linkToCidades("cidades"));
 
-        cidadeModelResponse.getEstado().add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeModelResponse.getEstado().getId())).withSelfRel());
+        cidadeModelResponse.getEstado().add(resourceLinkHelper.linkToEstado(cidadeModelResponse.getEstado().getId()));
 
         return cidadeModelResponse;
     }

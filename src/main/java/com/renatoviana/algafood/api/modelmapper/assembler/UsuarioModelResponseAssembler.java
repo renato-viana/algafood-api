@@ -1,7 +1,7 @@
 package com.renatoviana.algafood.api.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.controller.UsuarioController;
-import com.renatoviana.algafood.api.controller.UsuarioGrupoController;
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.UsuarioModelResponse;
 import com.renatoviana.algafood.domain.model.Usuario;
 import org.modelmapper.ModelMapper;
@@ -11,13 +11,15 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class UsuarioModelResponseAssembler extends RepresentationModelAssemblerSupport<Usuario, UsuarioModelResponse> {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
 
     public UsuarioModelResponseAssembler() {
         super(UsuarioController.class, UsuarioModelResponse.class);
@@ -29,10 +31,9 @@ public class UsuarioModelResponseAssembler extends RepresentationModelAssemblerS
 
         modelMapper.map(usuario, usuarioModelResponse);
 
-        usuarioModelResponse.add(linkTo(UsuarioController.class).withRel("usuarios"));
+        usuarioModelResponse.add(resourceLinkHelper.linkToUsuarios("usuarios"));
 
-        usuarioModelResponse.add(linkTo(methodOn(UsuarioGrupoController.class)
-                .listar(usuario.getId())).withSelfRel());
+        usuarioModelResponse.add(resourceLinkHelper.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
 
         return usuarioModelResponse;
     }

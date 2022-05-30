@@ -1,6 +1,7 @@
 package com.renatoviana.algafood.api.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.controller.EstadoController;
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.EstadoModelResponse;
 import com.renatoviana.algafood.domain.model.Estado;
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,9 @@ public class EstadoModelResponseAssembler extends RepresentationModelAssemblerSu
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
     public EstadoModelResponseAssembler() {
         super(EstadoController.class, EstadoModelResponse.class);
     }
@@ -26,7 +30,7 @@ public class EstadoModelResponseAssembler extends RepresentationModelAssemblerSu
         EstadoModelResponse estadoModelResponse = createModelWithId(estado.getId(), estado);
         modelMapper.map(estado, estadoModelResponse);
 
-        estadoModelResponse.add(linkTo(EstadoController.class).withRel("estados"));
+        estadoModelResponse.add(resourceLinkHelper.linkToEstados("estados"));
 
         return estadoModelResponse;
     }
