@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.controller;
 
-import com.renatoviana.algafood.api.ResourceUriHelper;
+import com.renatoviana.algafood.api.helper.ResourceUriHelper;
 import com.renatoviana.algafood.api.model.request.CidadeModelRequest;
 import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import com.renatoviana.algafood.api.modelmapper.assembler.CidadeModelResponseAssembler;

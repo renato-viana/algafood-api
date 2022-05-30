@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.api;
+package com.renatoviana.algafood.api.helper;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
@@ -8,7 +8,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
-import java.util.Objects;
 
 @UtilityClass
 public class ResourceUriHelper {
