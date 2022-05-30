@@ -29,6 +29,12 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
 
         pedidoModelResponse.add(resourceLinkHelper.linkToPedidos());
 
+        pedidoModelResponse.add(resourceLinkHelper.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+
+        pedidoModelResponse.add(resourceLinkHelper.linkToEntregaPedido(pedido.getCodigo(), "cancelar"));
+
+        pedidoModelResponse.add(resourceLinkHelper.linkToCancelamentoPedido(pedido.getCodigo(), "entregar"));
+
         pedidoModelResponse
                 .getRestaurante().add(
                         resourceLinkHelper
