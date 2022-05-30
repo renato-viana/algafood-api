@@ -3,14 +3,17 @@ package com.renatoviana.algafood.api.model.response;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@Relation(collectionRelation = "pedidos")
 @Getter
 @Setter
-public class PedidoModelResponse {
+public class PedidoModelResponse extends RepresentationModel<PedidoModelResponse> {
 
     @ApiModelProperty(example = "f9981ca4-5a5e-4da3-af04-933861df3e55")
     private String codigo;
@@ -40,8 +43,13 @@ public class PedidoModelResponse {
     private OffsetDateTime dataCancelamento;
 
     private RestauranteResumoModelResponse restaurante;
+
     private UsuarioModelResponse cliente;
+
     private FormaPagamentoModelResponse formaPagamento;
+
     private EnderecoModelResponse enderecoEntrega;
+
     private List<ItemPedidoModelResponse> itens;
+
 }

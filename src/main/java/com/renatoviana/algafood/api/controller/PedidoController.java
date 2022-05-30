@@ -19,15 +19,15 @@ import com.renatoviana.algafood.domain.service.EmissaoPedidoService;
 import com.renatoviana.algafood.infrastructure.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,50 +45,28 @@ public class PedidoController implements PedidoControllerOpenApi {
     @Autowired
     private PedidoResumoModelResponseAssembler pedidoResumoModelResponseAssembler;
 
-
     @Autowired
     private PedidoModelRequestDisassembler pedidoModelRequestDisassembler;
 
-//    @GetMapping
-//    public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
-//        List<Pedido> pedidos = pedidoRepository.findAll();
-//        List<PedidoResumoModelResponse> pedidosModelResponse = pedidoResumoModelResponseAssembler.toCollectionDTO
-//        (pedidos);
-//
-//        MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosModelResponse);
-//
-//        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-//        filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
-//
-//        if (StringUtils.isNotBlank(campos)) {
-//            filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
-//        }
-//
-//        pedidosWrapper.setFilters(filterProvider);
-//
-//        return pedidosWrapper;
-//    }
+    @Autowired
+    private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
     @GetMapping
-    public Page<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+    public PagedModel<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro,
+        @PageableDefault(size = 10) Pageable pageable) {
         pageable = traduzirPageable(pageable);
 
-        Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
+        Page<Pedido> pedidosPage = pedidoRepository.findAll(
+                PedidoSpecs.usandoFiltro(filtro), pageable);
 
-        List<PedidoResumoModelResponse> pedidosResumoOutput =
-                pedidoResumoModelResponseAssembler.toCollectionModelResponse(pedidosPage.getContent());
-
-        Page<PedidoResumoModelResponse> pedidosResumoOutputPage =
-                new PageImpl<>(pedidosResumoOutput, pageable, pedidosPage.getTotalElements());
-
-        return pedidosResumoOutputPage;
+        return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelResponseAssembler);
     }
 
     @GetMapping("/{codigoPedido}")
     public PedidoModelResponse buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 
-        return pedidoModelResponseAssembler.toModelResponse(pedido);
+        return pedidoModelResponseAssembler.toModel(pedido);
     }
 
     @PostMapping
@@ -103,7 +81,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 
             novoPedido = emissaoPedidoService.emitir(novoPedido);
 
-            return pedidoModelResponseAssembler.toModelResponse(novoPedido);
+            return pedidoModelResponseAssembler.toModel(novoPedido);
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
