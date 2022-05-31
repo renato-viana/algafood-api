@@ -1,12 +1,13 @@
 package com.renatoviana.algafood.api.controller;
 
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.openapi.controller.EstatisticasControllerOpenApi;
 import com.renatoviana.algafood.domain.filter.VendaDiariaFilter;
 import com.renatoviana.algafood.domain.model.dto.VendaDiaria;
 import com.renatoviana.algafood.domain.service.VendaJasperReportsService;
 import com.renatoviana.algafood.domain.service.VendaQueryService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +28,30 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
     @Autowired
     private VendaJasperReportsService vendaJasperReportsService;
 
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
+    @Override
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public EstatisticasModelResponse estatisticas() {
+        var estatisticasModelResponse = new EstatisticasModelResponse();
+
+        estatisticasModelResponse.add(resourceLinkHelper.linkToEstatisticasVendasDiarias("vendas-diarias"));
+
+        return estatisticasModelResponse;
+    }
+
+    @Override
     @GetMapping(path = "vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
-             @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
+                                                    @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
         return vendaQueryService.consultarVendasDiarias(filtro, timeOffset);
     }
 
+    @Override
     @GetMapping(path = "vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro,
-             @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
+                                                            @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
 
         byte[] bytesPdf = vendaJasperReportsService.emitirVendasDiarias(filtro, timeOffset);
 
@@ -46,5 +62,8 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
                 .contentType(MediaType.APPLICATION_PDF)
                 .headers(headers)
                 .body(bytesPdf);
+    }
+
+    public static class EstatisticasModelResponse extends RepresentationModel<EstatisticasModelResponse> {
     }
 }

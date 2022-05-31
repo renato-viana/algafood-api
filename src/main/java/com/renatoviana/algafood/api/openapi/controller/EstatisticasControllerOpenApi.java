@@ -1,5 +1,7 @@
 package com.renatoviana.algafood.api.openapi.controller;
 
+import com.renatoviana.algafood.api.controller.EstatisticasController;
+import com.renatoviana.algafood.api.controller.EstatisticasController.EstatisticasModelResponse;
 import com.renatoviana.algafood.domain.filter.VendaDiariaFilter;
 import com.renatoviana.algafood.domain.model.dto.VendaDiaria;
 import io.swagger.annotations.*;
@@ -29,4 +31,7 @@ public interface EstatisticasControllerOpenApi {
     ResponseEntity<byte[]> consultarVendasDiariasPdf(
             VendaDiariaFilter filtro,
             String timeOffset);
+
+    @ApiOperation(value = "Estatísticas", hidden = true)
+    EstatisticasModelResponse estatisticas();
 }

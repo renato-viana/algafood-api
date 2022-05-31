@@ -28,6 +28,7 @@ public class RootEntryPointController {
         rootEntryPointModelResponse.add(resourceLinkHelper.linkToFormasPagamento("formas-pagamento"));
         rootEntryPointModelResponse.add(resourceLinkHelper.linkToEstados("estados"));
         rootEntryPointModelResponse.add(resourceLinkHelper.linkToCidades("cidades"));
+        rootEntryPointModelResponse.add(resourceLinkHelper.linkToEstatisticas("estatisticas"));
 
         return rootEntryPointModelResponse;
     }
