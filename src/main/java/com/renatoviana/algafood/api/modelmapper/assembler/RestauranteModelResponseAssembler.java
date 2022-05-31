@@ -30,6 +30,26 @@ public class RestauranteModelResponseAssembler
 
         modelMapper.map(restaurante, restauranteModelResponse);
 
+        if (restaurante.ativacaoPermitida()) {
+            restauranteModelResponse.add(
+                    resourceLinkHelper.linkToRestauranteAtivacao(restaurante.getId(), "ativar"));
+        }
+
+        if (restaurante.inativacaoPermitida()) {
+            restauranteModelResponse.add(
+                    resourceLinkHelper.linkToRestauranteInativacao(restaurante.getId(), "inativar"));
+        }
+
+        if (restaurante.aberturaPermitida()) {
+            restauranteModelResponse.add(
+                    resourceLinkHelper.linkToRestauranteAbertura(restaurante.getId(), "abrir"));
+        }
+
+        if (restaurante.fechamentoPermitido()) {
+            restauranteModelResponse.add(
+                    resourceLinkHelper.linkToRestauranteFechamento(restaurante.getId(), "fechar"));
+        }
+
         restauranteModelResponse
                 .add(resourceLinkHelper
                         .linkToRestaurantes("restaurantes"));
