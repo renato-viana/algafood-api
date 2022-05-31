@@ -1,5 +1,6 @@
 package com.renatoviana.algafood.api.controller;
 
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.request.ProdutoModelRequest;
 import com.renatoviana.algafood.api.model.response.ProdutoModelResponse;
 import com.renatoviana.algafood.api.modelmapper.assembler.ProdutoModelResponseAssembler;
@@ -11,6 +12,7 @@ import com.renatoviana.algafood.domain.repository.ProdutoRepository;
 import com.renatoviana.algafood.domain.service.CadastroProdutoService;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +39,13 @@ public class ProdutoController implements ProdutoControllerOpenApi {
     @Autowired
     private ProdutoModelRequestDisassembler produtoModelRequestDisassembler;
 
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
+    @Override
     @GetMapping
-    public List<ProdutoModelResponse> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos) {
+    public CollectionModel<ProdutoModelResponse> listar(@PathVariable Long restauranteId, @RequestParam(required =
+            false, defaultValue = "false") Boolean incluirInativos) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
         List<Produto> produtos = null;
@@ -49,16 +56,19 @@ public class ProdutoController implements ProdutoControllerOpenApi {
             produtos = produtoRepository.findAtivosByRestaurante(restaurante);
         }
 
-        return produtoModelResponseAssembler.toCollectionModelResponse(produtos);
+        return produtoModelResponseAssembler.toCollectionModel(produtos)
+                .add(resourceLinkHelper.linkToProdutos(restauranteId));
     }
 
+    @Override
     @GetMapping("/{produtoId}")
     public ProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
 
-        return produtoModelResponseAssembler.toModelResponse(produto);
+        return produtoModelResponseAssembler.toModel(produto);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModelResponse adicionar(@PathVariable Long restauranteId,
@@ -70,9 +80,10 @@ public class ProdutoController implements ProdutoControllerOpenApi {
 
         produto = cadastroProduto.salvar(produto);
 
-        return produtoModelResponseAssembler.toModelResponse(produto);
+        return produtoModelResponseAssembler.toModel(produto);
     }
 
+    @Override
     @PutMapping("/{produtoId}")
     public ProdutoModelResponse atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
                                           @RequestBody @Valid ProdutoModelRequest produtoInput) {
@@ -82,6 +93,6 @@ public class ProdutoController implements ProdutoControllerOpenApi {
 
         produtoAtual = cadastroProduto.salvar(produtoAtual);
 
-        return produtoModelResponseAssembler.toModelResponse(produtoAtual);
+        return produtoModelResponseAssembler.toModel(produtoAtual);
     }
 }   

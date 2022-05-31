@@ -30,6 +30,8 @@ public class RestauranteModelResponseAssembler
 
         modelMapper.map(restaurante, restauranteModelResponse);
 
+        restauranteModelResponse.add(resourceLinkHelper.linkToRestaurantes("restaurantes"));
+
         if (restaurante.ativacaoPermitida()) {
             restauranteModelResponse.add(
                     resourceLinkHelper.linkToRestauranteAtivacao(restaurante.getId(), "ativar"));
@@ -50,27 +52,22 @@ public class RestauranteModelResponseAssembler
                     resourceLinkHelper.linkToRestauranteFechamento(restaurante.getId(), "fechar"));
         }
 
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestaurantes("restaurantes"));
+        restauranteModelResponse.add(resourceLinkHelper.linkToProdutos(restaurante.getId(), "produtos"));
 
-        restauranteModelResponse
-                .getCozinha().add(
-                        resourceLinkHelper
-                                .linkToCozinha(restaurante.getCozinha().getId()));
+        restauranteModelResponse.getCozinha().add(
+                resourceLinkHelper.linkToCozinha(restaurante.getCozinha().getId()));
 
-        restauranteModelResponse
-                .getEndereco().getCidade().add(
-                        resourceLinkHelper
-                                .linkToCidade(restaurante.getEndereco().getCidade().getId()));
+        if (restauranteModelResponse.getEndereco() != null
+                && restauranteModelResponse.getEndereco().getCidade() != null) {
+            restauranteModelResponse.getEndereco().getCidade().add(
+                    resourceLinkHelper.linkToCidade(restaurante.getEndereco().getCidade().getId()));
+        }
 
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestauranteFormasPagamento(restaurante.getId(), "formas-pagamento"));
+        restauranteModelResponse.add(resourceLinkHelper.linkToRestauranteFormasPagamento(restaurante.getId(),
+                "formas-pagamento"));
 
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestauranteResponsaveis(restaurante.getId(), "responsaveis"));
+        restauranteModelResponse.add(resourceLinkHelper.linkToRestauranteResponsaveis(restaurante.getId(),
+                "responsaveis"));
 
         return restauranteModelResponse;
     }
