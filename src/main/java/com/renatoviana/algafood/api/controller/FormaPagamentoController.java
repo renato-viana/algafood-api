@@ -57,13 +57,13 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 
         List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
 
-        CollectionModel<FormaPagamentoModelResponse> formasPagamentosModelResponse =
+        CollectionModel<FormaPagamentoModelResponse> formasPagamentoModelResponse =
                 formaPagamentoModelResponseAssembler.toCollectionModel(formasPagamento);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
                 .eTag(eTag)
-                .body(formasPagamentosModelResponse);
+                .body(formasPagamentoModelResponse);
     }
 
     @GetMapping("/{formaPagamentoId}")

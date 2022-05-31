@@ -166,6 +166,15 @@ public class ResourceLinkHelper {
                 .listar(restauranteId)).withRel(rel);
     }
 
+    public Link linkToRestauranteFormasPagamento(Long restauranteId) {
+        return linkToRestauranteFormasPagamento(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToRestauranteFormaPagamentoDesassociacao(Long restauranteId, Long formaPagamentoId, String rel) {
+        return linkTo(methodOn(RestauranteFormaPagamentoController.class)
+                .desassociar(restauranteId, formaPagamentoId)).withRel(rel);
+    }
+
     public Link linkToRestauranteResponsaveis(Long restauranteId, String rel) {
         return linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
                 .listar(restauranteId)).withRel(rel);
@@ -199,10 +208,6 @@ public class ResourceLinkHelper {
     public Link linkToRestauranteAtivacao(Long restauranteId, String rel) {
         return linkTo(methodOn(RestauranteController.class)
                 .ativar(restauranteId)).withRel(rel);
-    }
-
-    public Link linkToRestauranteFormasPagamento(Long restauranteId) {
-        return linkToRestauranteFormasPagamento(restauranteId, IanaLinkRelations.SELF.value());
     }
 
     public Link linkToFormasPagamento(String rel) {
