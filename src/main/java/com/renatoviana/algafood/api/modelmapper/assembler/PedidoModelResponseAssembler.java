@@ -27,7 +27,7 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
         PedidoModelResponse pedidoModelResponse = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModelResponse);
 
-        pedidoModelResponse.add(resourceLinkHelper.linkToPedidos());
+        pedidoModelResponse.add(resourceLinkHelper.linkToPedidos("pedidos"));
 
         if (pedido.podeSerConfirmado()) {
             pedidoModelResponse.add(resourceLinkHelper.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
