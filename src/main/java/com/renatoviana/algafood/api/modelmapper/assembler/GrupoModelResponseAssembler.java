@@ -1,28 +1,44 @@
 package com.renatoviana.algafood.api.modelmapper.assembler;
 
+import com.renatoviana.algafood.api.controller.GrupoController;
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.GrupoModelResponse;
 import com.renatoviana.algafood.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
-public class GrupoModelResponseAssembler {
+public class GrupoModelResponseAssembler extends RepresentationModelAssemblerSupport<Grupo, GrupoModelResponse> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public GrupoModelResponse toModelResponse(Grupo grupo) {
-        return modelMapper.map(grupo, GrupoModelResponse.class);
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
+    public GrupoModelResponseAssembler() {
+        super(GrupoController.class, GrupoModelResponse.class);
     }
 
-    public List<GrupoModelResponse> toCollectionModelResponse(Collection<Grupo> grupos) {
-        return grupos.stream()
-                .map(this::toModelResponse)
-                .collect(Collectors.toList());
+    @Override
+    public GrupoModelResponse toModel(Grupo grupo) {
+        GrupoModelResponse grupoModelResponse = createModelWithId(grupo.getId(), grupo);
+        modelMapper.map(grupo, grupoModelResponse);
+
+        grupoModelResponse.add(resourceLinkHelper.linkToGrupos("grupos"));
+
+        grupoModelResponse.add(resourceLinkHelper.linkToGrupoPermissoes(grupo.getId(), "permissoes"));
+
+        return grupoModelResponse;
     }
+
+    @Override
+    public CollectionModel<GrupoModelResponse> toCollectionModel(Iterable<? extends Grupo> entities) {
+        return super.toCollectionModel(entities)
+                .add(resourceLinkHelper.linkToGrupos());
+    }
+
 }
