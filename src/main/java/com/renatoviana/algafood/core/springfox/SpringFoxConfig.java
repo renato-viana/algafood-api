@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
 import com.renatoviana.algafood.api.model.response.PedidoResumoModelResponse;
 import com.renatoviana.algafood.api.openapi.model.CozinhasModelResponseOpenApi;
+import com.renatoviana.algafood.api.openapi.model.LinksModelResponseOpenApi;
 import com.renatoviana.algafood.api.openapi.model.PageableModelResponseOpenApi;
 import com.renatoviana.algafood.api.openapi.model.PedidosResumoModelResponseOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -62,6 +64,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .ignoredParameterTypes(ServletWebRequest.class, URL.class, URI.class, URLStreamHandler.class,
                         Resource.class, File.class, InputStream.class)
                 .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelResponseOpenApi.class)
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, CozinhaModelResponse.class),
                         CozinhasModelResponseOpenApi.class))
