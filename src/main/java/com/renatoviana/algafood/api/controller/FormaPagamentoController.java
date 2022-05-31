@@ -9,6 +9,7 @@ import com.renatoviana.algafood.domain.model.FormaPagamento;
 import com.renatoviana.algafood.domain.repository.FormaPagamentoRepository;
 import com.renatoviana.algafood.domain.service.CadastroFormaPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,7 +40,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
     private FormaPagamentoModelRequestDisassembler formaPagamentoModelRequestDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoModelResponse>> listar(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<FormaPagamentoModelResponse>> listar(ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 
         String eTag = "0";
@@ -54,15 +55,15 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
             return null;
         }
 
-        List<FormaPagamento> formasPagamentos = formaPagamentoRepository.findAll();
+        List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
 
-        List<FormaPagamentoModelResponse> formasPagamentosOutputDTO =
-                formaPagamentoModelResponseAssembler.toCollectionModelResponse(formasPagamentos);
+        CollectionModel<FormaPagamentoModelResponse> formasPagamentosModelResponse =
+                formaPagamentoModelResponseAssembler.toCollectionModel(formasPagamento);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
                 .eTag(eTag)
-                .body(formasPagamentosOutputDTO);
+                .body(formasPagamentosModelResponse);
     }
 
     @GetMapping("/{formaPagamentoId}")
@@ -84,7 +85,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 
         FormaPagamento formaPagamento = cadastroFormaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
-        FormaPagamentoModelResponse formaPagamentoOutputDTO = formaPagamentoModelResponseAssembler.toModelResponse(formaPagamento);
+        FormaPagamentoModelResponse formaPagamentoOutputDTO = formaPagamentoModelResponseAssembler.toModel(formaPagamento);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
@@ -99,7 +100,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 
         formaPagamento = cadastroFormaPagamentoService.salvar(formaPagamento);
 
-        return formaPagamentoModelResponseAssembler.toModelResponse(formaPagamento);
+        return formaPagamentoModelResponseAssembler.toModel(formaPagamento);
     }
 
     @PutMapping("/{formaPagamentoId}")
@@ -112,7 +113,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 
         formaPagamentoAtual = cadastroFormaPagamentoService.salvar(formaPagamentoAtual);
 
-        return formaPagamentoModelResponseAssembler.toModelResponse(formaPagamentoAtual);
+        return formaPagamentoModelResponseAssembler.toModel(formaPagamentoAtual);
     }
 
     @DeleteMapping("/{formaPagamentoId}")

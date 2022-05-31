@@ -1,16 +1,16 @@
 package com.renatoviana.algafood.api.controller;
 
+import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.model.response.FormaPagamentoModelResponse;
 import com.renatoviana.algafood.api.modelmapper.assembler.FormaPagamentoModelResponseAssembler;
 import com.renatoviana.algafood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/restaurantes/{restauranteId}/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -22,11 +22,16 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
     @Autowired
     private FormaPagamentoModelResponseAssembler formaPagamentoModelResponseAssembler;
 
+    @Autowired
+    private ResourceLinkHelper resourceLinkHelper;
+
     @GetMapping
-    public List<FormaPagamentoModelResponse> listar(@PathVariable Long restauranteId) {
+    public CollectionModel<FormaPagamentoModelResponse> listar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-        return formaPagamentoModelResponseAssembler.toCollectionModelResponse(restaurante.getFormasPagamento());
+        return formaPagamentoModelResponseAssembler.toCollectionModel(restaurante.getFormasPagamento())
+                .removeLinks()
+                .add(resourceLinkHelper.linkToRestauranteFormasPagamento(restauranteId));
     }
 
     @DeleteMapping("/{formaPagamentoId}")
