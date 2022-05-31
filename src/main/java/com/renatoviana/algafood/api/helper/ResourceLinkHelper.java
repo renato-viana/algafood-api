@@ -244,4 +244,13 @@ public class ResourceLinkHelper {
         return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
     }
 
+    public Link linkToFotoProduto(Long restauranteId, Long produtoId, String rel) {
+        return linkTo(methodOn(ProdutoFotoController.class)
+                .buscar(restauranteId, produtoId)).withRel(rel);
+    }
+
+    public Link linkToFotoProduto(Long restauranteId, Long produtoId) {
+        return linkToFotoProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
+    }
+
 }

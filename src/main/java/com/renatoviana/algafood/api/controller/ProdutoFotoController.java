@@ -30,27 +30,29 @@ import java.util.List;
 public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 
     @Autowired
-    CatalogoFotoProdutoService catalogoFotoProdutoService;
+    private CatalogoFotoProdutoService catalogoFotoProdutoService;
 
     @Autowired
-    CadastroProdutoService cadastroProdutoService;
+    private CadastroProdutoService cadastroProdutoService;
 
     @Autowired
-    FotoProdutoModelResponseAssembler fotoProdutoModelResponseAssembler;
+    private FotoProdutoModelResponseAssembler fotoProdutoModelResponseAssembler;
 
     @Autowired
     private FotoStorageService fotoStorageService;
 
+    @Override
     @GetMapping
     public FotoProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
-        return fotoProdutoModelResponseAssembler.toModelResponse(fotoProduto);
+        return fotoProdutoModelResponseAssembler.toModel(fotoProduto);
     }
 
+    @Override
     @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<?> buscarFoto(@PathVariable Long restauranteId,
-       @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
+                                        @PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
             throws HttpMediaTypeNotAcceptableException {
         try {
             FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
@@ -88,10 +90,11 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
         }
     }
 
+    @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModelResponse atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-       @Valid FotoProdutoModelRequest fotoProdutoInput,
-       @RequestPart(required = true) MultipartFile arquivo) throws IOException {
+                                                  @Valid FotoProdutoModelRequest fotoProdutoInput,
+                                                  @RequestPart(required = true) MultipartFile arquivo) throws IOException {
 
         Produto produto = cadastroProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
@@ -104,12 +107,14 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
 
         FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
 
-        return fotoProdutoModelResponseAssembler.toModelResponse(fotoSalva);
+        return fotoProdutoModelResponseAssembler.toModel(fotoSalva);
     }
 
+    @Override
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
         catalogoFotoProdutoService.excluir(restauranteId, produtoId);
     }
+
 }

@@ -24,14 +24,17 @@ public class ProdutoModelResponseAssembler extends RepresentationModelAssemblerS
 
     @Override
     public ProdutoModelResponse toModel(Produto produto) {
-        ProdutoModelResponse produtoModel = createModelWithId(
+        ProdutoModelResponse produtoModelResponse = createModelWithId(
                 produto.getId(), produto, produto.getRestaurante().getId());
 
-        modelMapper.map(produto, produtoModel);
+        modelMapper.map(produto, produtoModelResponse);
 
-        produtoModel.add(resourceLinkHelper.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
+        produtoModelResponse.add(resourceLinkHelper.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
 
-        return produtoModel;
+        produtoModelResponse.add(resourceLinkHelper.linkToFotoProduto(
+                produto.getRestaurante().getId(), produto.getId(), "foto"));
+
+        return produtoModelResponse;
     }
 
 }
