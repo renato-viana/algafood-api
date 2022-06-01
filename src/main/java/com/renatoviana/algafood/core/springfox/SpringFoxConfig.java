@@ -163,7 +163,10 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                         PermissoesModelResponseOpenApi.class),
                 AlternateTypeRules.newRule(
                         typeResolver.resolve(PagedModel.class, PedidoResumoModelResponse.class),
-                        PedidosResumoModelResponseOpenApi.class)
+                        PedidosResumoModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, ProdutoModelResponse.class),
+                        ProdutosModelResponseOpenApi.class)
         };
     }
 
