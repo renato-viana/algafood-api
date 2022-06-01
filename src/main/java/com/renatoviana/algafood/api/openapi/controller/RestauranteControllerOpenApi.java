@@ -5,10 +5,10 @@ import com.renatoviana.algafood.api.model.request.RestauranteModelRequest;
 import com.renatoviana.algafood.api.model.response.RestauranteApenasNomeModelResponse;
 import com.renatoviana.algafood.api.model.response.RestauranteBasicoModelResponse;
 import com.renatoviana.algafood.api.model.response.RestauranteModelResponse;
-import com.renatoviana.algafood.api.openapi.model.RestauranteBasicoModelResponseOpenApi;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ public interface RestauranteControllerOpenApi {
 //    @JsonView(RestauranteView.Resumo.class)
     CollectionModel<RestauranteBasicoModelResponse> listar();
 
+    @ApiIgnore
     @ApiOperation(value = "Lista restaurantes", hidden = true)
     CollectionModel<RestauranteApenasNomeModelResponse> listarApenasNomes();
 
