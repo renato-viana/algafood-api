@@ -22,6 +22,7 @@ import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
@@ -63,21 +64,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                         Resource.class, File.class, InputStream.class)
                 .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelResponseOpenApi.class)
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(PagedModel.class, CozinhaModelResponse.class),
-                        CozinhasModelResponseOpenApi.class))
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(Page.class, PedidoResumoModelResponse.class),
-                        PedidosResumoModelResponseOpenApi.class))
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(CollectionModel.class, CidadeModelResponse.class),
-                        CidadesModelResponseOpenApi.class))
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(CollectionModel.class, EstadoModelResponse.class),
-                        EstadosModelResponseOpenApi.class))
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(CollectionModel.class, FormaPagamentoModelResponse.class),
-                        FormasPagamentoModelResponseOpenApi.class))
+                .alternateTypeRules(rules(typeResolver))
                 .apiInfo(apiInfo())
                 .tags(tags()[0], tags());
     }
@@ -148,6 +135,32 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 new Tag("Estatísticas", "Estatísticas da AlgaFood"),
                 new Tag("Usuários", "Gerenciaros usuários"),
                 new Tag("Permissões", "Gerencia as permissões")
+        };
+    }
+
+    private AlternateTypeRule[] rules(TypeResolver typeResolver) {
+        return new AlternateTypeRule[]{
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(PagedModel.class, CozinhaModelResponse.class),
+                        CozinhasModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(Page.class, PedidoResumoModelResponse.class),
+                        PedidosResumoModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CidadeModelResponse.class),
+                        CidadesModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, EstadoModelResponse.class),
+                        EstadosModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, FormaPagamentoModelResponse.class),
+                        FormasPagamentoModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, GrupoModelResponse.class),
+                        GruposModelResponseOpenApi.class),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, PermissaoModelResponse.class),
+                        PermissoesModelResponseOpenApi.class),
         };
     }
 
