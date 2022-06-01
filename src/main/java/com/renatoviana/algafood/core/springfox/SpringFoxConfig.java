@@ -2,18 +2,17 @@ package com.renatoviana.algafood.core.springfox;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
+import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
 import com.renatoviana.algafood.api.model.response.PedidoResumoModelResponse;
-import com.renatoviana.algafood.api.openapi.model.CozinhasModelResponseOpenApi;
-import com.renatoviana.algafood.api.openapi.model.LinksModelResponseOpenApi;
-import com.renatoviana.algafood.api.openapi.model.PageableModelResponseOpenApi;
-import com.renatoviana.algafood.api.openapi.model.PedidosResumoModelResponseOpenApi;
+import com.renatoviana.algafood.api.openapi.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,6 +70,9 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, PedidoResumoModelResponse.class),
                         PedidosResumoModelResponseOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CidadeModelResponse.class),
+                        CidadesModelResponseOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(tags()[0], tags());
     }
