@@ -20,7 +20,7 @@ public class PedidosResumoModelResponseOpenApi {
 
     private PagedModelResponseOpenApi page;
 
-    @ApiModel("PedidosResumoEmbeddedModel")
+    @ApiModel("PedidosResumoEmbeddedModelResponse")
     @Data
     public static class PedidosResumoEmbeddedModelResponseOpenApi {
 

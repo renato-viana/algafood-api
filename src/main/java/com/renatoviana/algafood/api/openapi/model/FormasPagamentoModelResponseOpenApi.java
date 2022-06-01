@@ -15,7 +15,7 @@ public class FormasPagamentoModelResponseOpenApi {
 
     private Links _links;
 
-    @ApiModel("FormasPagamentoEmbeddedModel")
+    @ApiModel("FormasPagamentoEmbeddedModelResponse")
     @Data
     public static class FormasPagamentoEmbeddedModelResponseOpenApi {
 

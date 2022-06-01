@@ -7,7 +7,7 @@ import org.springframework.hateoas.Links;
 
 import java.util.List;
 
-@ApiModel("ProdutosModel")
+@ApiModel("ProdutosModelResponse")
 @Data
 public class ProdutosModelResponseOpenApi {
 
@@ -15,7 +15,7 @@ public class ProdutosModelResponseOpenApi {
 
     private Links _links;
 
-    @ApiModel("ProdutosEmbeddedModel")
+    @ApiModel("ProdutosEmbeddedModelResponse")
     @Data
     public static class ProdutosEmbeddedModelResponseOpenApi {
 

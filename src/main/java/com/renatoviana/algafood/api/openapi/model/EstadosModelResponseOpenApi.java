@@ -15,7 +15,7 @@ public class EstadosModelResponseOpenApi {
 
     private Links _links;
 
-    @ApiModel("EstadosEmbeddedModel")
+    @ApiModel("EstadosEmbeddedModelResponse")
     @Data
     public static class EstadosEmbeddedModelResponseOpenApi {
 
