@@ -14,7 +14,7 @@ public class EstadoModelResponse extends RepresentationModel<EstadoModelResponse
 	@ApiModelProperty(example = "1")
 	private Long id;
 
-	@ApiModelProperty(example = "Rio de Janeiro")
+	@ApiModelProperty(example = "Minas Gerais")
 	private String nome;
 
 }

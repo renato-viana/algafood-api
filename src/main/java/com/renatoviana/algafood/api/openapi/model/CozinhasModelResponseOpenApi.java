@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 public class CozinhasModelResponseOpenApi {
 
-    private CozinhaEmbeddedModelResponseOpenApi _embedded;
+    private CozinhasEmbeddedModelResponseOpenApi _embedded;
 
     private Links _links;
 
@@ -22,7 +22,7 @@ public class CozinhasModelResponseOpenApi {
 
     @ApiModel("CozinhasEmbeddedModelResponse")
     @Data
-    public class CozinhaEmbeddedModelResponseOpenApi {
+    public static class CozinhasEmbeddedModelResponseOpenApi {
 
         private List<CozinhaModelResponse> cozinhas;
     }

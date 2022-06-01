@@ -4,6 +4,7 @@ import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.model.response.CidadeModelResponse;
 import com.renatoviana.algafood.api.model.response.CozinhaModelResponse;
+import com.renatoviana.algafood.api.model.response.EstadoModelResponse;
 import com.renatoviana.algafood.api.model.response.PedidoResumoModelResponse;
 import com.renatoviana.algafood.api.openapi.model.*;
 import org.springframework.context.annotation.Bean;
@@ -74,6 +75,9 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(CollectionModel.class, CidadeModelResponse.class),
                         CidadesModelResponseOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, EstadoModelResponse.class),
+                        EstadosModelResponseOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(tags()[0], tags());
     }

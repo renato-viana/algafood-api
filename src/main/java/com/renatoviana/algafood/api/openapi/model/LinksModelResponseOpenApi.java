@@ -14,7 +14,7 @@ public class LinksModelResponseOpenApi {
     @Setter
     @Getter
     @ApiModel("Link")
-    private class LinkModelResponse {
+    private static class LinkModelResponse {
         private String href;
         private boolean templated;
     }
