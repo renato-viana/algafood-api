@@ -3,17 +3,16 @@ package com.renatoviana.algafood.api.openapi.controller;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.model.request.FormaPagamentoModelRequest;
 import com.renatoviana.algafood.api.model.response.FormaPagamentoModelResponse;
+import com.renatoviana.algafood.api.openapi.model.FormasPagamentoModelResponseOpenApi;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.util.List;
-
 @Api(tags = "Formas de pagamento")
 public interface FormaPagamentoControllerOpenApi {
 
-    @ApiOperation("Lista as formas de pagamento")
+    @ApiOperation(value = "Lista as formas de pagamento", response = FormasPagamentoModelResponseOpenApi.class)
     ResponseEntity<CollectionModel<FormaPagamentoModelResponse>> listar(ServletWebRequest request);
 
     @ApiOperation("Busca uma forma de pagamento por ID")
