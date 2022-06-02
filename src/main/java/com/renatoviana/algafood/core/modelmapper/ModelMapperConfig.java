@@ -1,12 +1,12 @@
 package com.renatoviana.algafood.core.modelmapper;
 
-import com.renatoviana.algafood.api.model.request.ItemPedidoModelRequest;
+import com.renatoviana.algafood.api.v1.model.request.ItemPedidoModelRequest;
 import com.renatoviana.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.renatoviana.algafood.api.model.response.EnderecoModelResponse;
+import com.renatoviana.algafood.api.v1.model.response.EnderecoModelResponse;
 import com.renatoviana.algafood.domain.model.Endereco;
 
 @Configuration

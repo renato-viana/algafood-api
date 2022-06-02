@@ -2,8 +2,8 @@ package com.renatoviana.algafood.core.springfox;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
-import com.renatoviana.algafood.api.model.response.*;
-import com.renatoviana.algafood.api.openapi.model.*;
+import com.renatoviana.algafood.api.v1.model.response.*;
+import com.renatoviana.algafood.api.v1.openapi.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.helper;
 
-import com.renatoviana.algafood.api.controller.*;
+import com.renatoviana.algafood.api.v1.controller.*;
 import org.springframework.hateoas.*;
 import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.stereotype.Component;
