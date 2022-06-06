@@ -1,7 +1,7 @@
 package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.v1.controller.EstadoController;
-import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
+import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.EstadoModelResponse;
 import com.renatoviana.algafood.domain.model.Estado;
 import org.modelmapper.ModelMapper;

@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.controller;
 
-import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
+import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.PermissaoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.PermissaoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.GrupoPermissaoControllerOpenApi;

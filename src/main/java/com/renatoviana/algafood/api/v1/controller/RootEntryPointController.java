@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.controller;
 
-import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
+import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.MediaType;

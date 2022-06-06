@@ -1,25 +1,24 @@
-package com.renatoviana.algafood.api.v1.modelmapper.disassembler;
+package com.renatoviana.algafood.api.v2.modelmapper.disassembler;
 
+import com.renatoviana.algafood.api.v2.model.request.CidadeModelRequestV2;
+import com.renatoviana.algafood.domain.model.Cidade;
+import com.renatoviana.algafood.domain.model.Estado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.renatoviana.algafood.api.v1.model.request.CidadeModelRequest;
-import com.renatoviana.algafood.domain.model.Cidade;
-import com.renatoviana.algafood.domain.model.Estado;
-
 @Component
-public class CidadeModelRequestDisassembler {
+public class CidadeModelRequestDisassemblerV2 {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public Cidade toDomainObject(CidadeModelRequest cidadeModelRequest) {
+    public Cidade toDomainObject(CidadeModelRequestV2 cidadeModelRequest) {
 
         return modelMapper.map(cidadeModelRequest, Cidade.class);
     }
 
-    public void copyToDomainObject(CidadeModelRequest cidadeModelRequest, Cidade cidade) {
+    public void copyToDomainObject(CidadeModelRequestV2 cidadeModelRequest, Cidade cidade) {
         // Para evitar org.hibernate.HibernateException: identifier of an instance of
         // com.renatoviana.algafood.domain.model.Estado was altered from 1 to 2
         cidade.setEstado(new Estado());

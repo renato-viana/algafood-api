@@ -1,7 +1,7 @@
 package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 
 import com.renatoviana.algafood.api.v1.controller.GrupoController;
-import com.renatoviana.algafood.api.helper.ResourceLinkHelper;
+import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.GrupoModelResponse;
 import com.renatoviana.algafood.domain.model.Grupo;
 import org.modelmapper.ModelMapper;

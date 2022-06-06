@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.api.helper;
+package com.renatoviana.algafood.api.v1.helper;
 
 import com.renatoviana.algafood.api.v1.controller.*;
 import org.springframework.hateoas.*;
