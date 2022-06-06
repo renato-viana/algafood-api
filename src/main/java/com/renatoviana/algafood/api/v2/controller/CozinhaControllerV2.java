@@ -1,10 +1,9 @@
-package com.renatoviana.algafood.api.v1.controller;
+package com.renatoviana.algafood.api.v2.controller;
 
-import com.renatoviana.algafood.api.v1.model.request.CozinhaModelRequest;
-import com.renatoviana.algafood.api.v1.model.response.CozinhaModelResponse;
-import com.renatoviana.algafood.api.v1.modelmapper.assembler.CozinhaModelResponseAssembler;
-import com.renatoviana.algafood.api.v1.modelmapper.disassembler.CozinhaModelRequestDisassembler;
-import com.renatoviana.algafood.api.v1.openapi.controller.CozinhaControllerOpenApi;
+import com.renatoviana.algafood.api.v2.model.request.CozinhaModelRequestV2;
+import com.renatoviana.algafood.api.v2.model.response.CozinhaModelResponseV2;
+import com.renatoviana.algafood.api.v2.modelmapper.assembler.CozinhaModelResponseAssemblerV2;
+import com.renatoviana.algafood.api.v2.modelmapper.disassembler.CozinhaModelRequestDisassemblerV2;
 import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.repository.CozinhaRepository;
 import com.renatoviana.algafood.domain.service.CadastroCozinhaService;
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/v1/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CozinhaController implements CozinhaControllerOpenApi {
+@RequestMapping(path = "/v2/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CozinhaControllerV2 {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -31,26 +30,26 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     private CadastroCozinhaService cadastroCozinhaService;
 
     @Autowired
-    private CozinhaModelResponseAssembler cozinhaModelResponseAssembler;
+    private CozinhaModelResponseAssemblerV2 cozinhaModelResponseAssembler;
 
     @Autowired
-    private CozinhaModelRequestDisassembler cozinhaModelRequestDisassembler;
+    private CozinhaModelRequestDisassemblerV2 cozinhaModelRequestDisassembler;
 
     @Autowired
     private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
     @GetMapping
-    public PagedModel<CozinhaModelResponse> listar(@PageableDefault(size = 10) Pageable pageable) {
+    public PagedModel<CozinhaModelResponseV2> listar(@PageableDefault(size = 10) Pageable pageable) {
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
-        PagedModel<CozinhaModelResponse> cozinhasPagedModel = pagedResourcesAssembler
+        PagedModel<CozinhaModelResponseV2> cozinhasPagedModel = pagedResourcesAssembler
                 .toModel(cozinhasPage, cozinhaModelResponseAssembler);
 
         return cozinhasPagedModel;
     }
 
     @GetMapping("/{cozinhaId}")
-    public CozinhaModelResponse buscar(@PathVariable Long cozinhaId) {
+    public CozinhaModelResponseV2 buscar(@PathVariable Long cozinhaId) {
         Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
 
         return cozinhaModelResponseAssembler.toModel(cozinha);
@@ -58,7 +57,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CozinhaModelResponse adicionar(@RequestBody @Valid CozinhaModelRequest cozinhaModelRequest) {
+    public CozinhaModelResponseV2 adicionar(@RequestBody @Valid CozinhaModelRequestV2 cozinhaModelRequest) {
         Cozinha cozinha = cozinhaModelRequestDisassembler.toDomainObject(cozinhaModelRequest);
 
         cozinha = cadastroCozinhaService.salvar(cozinha);
@@ -67,7 +66,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     }
 
     @PutMapping("/{cozinhaId}")
-    public CozinhaModelResponse atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaModelRequest cozinhaModelRequest) {
+    public CozinhaModelResponseV2 atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaModelRequestV2 cozinhaModelRequest) {
         Cozinha cozinhaAtual = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
 
         cozinhaModelRequestDisassembler.copyToDomainObject(cozinhaModelRequest, cozinhaAtual);
