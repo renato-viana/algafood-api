@@ -4,6 +4,7 @@ import com.renatoviana.algafood.api.v2.model.request.CozinhaModelRequestV2;
 import com.renatoviana.algafood.api.v2.model.response.CozinhaModelResponseV2;
 import com.renatoviana.algafood.api.v2.modelmapper.assembler.CozinhaModelResponseAssemblerV2;
 import com.renatoviana.algafood.api.v2.modelmapper.disassembler.CozinhaModelRequestDisassemblerV2;
+import com.renatoviana.algafood.api.v2.openapi.controller.CozinhaControllerV2OpenApi;
 import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.repository.CozinhaRepository;
 import com.renatoviana.algafood.domain.service.CadastroCozinhaService;
@@ -21,7 +22,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/v2/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CozinhaControllerV2 {
+public class CozinhaControllerV2 implements CozinhaControllerV2OpenApi {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -48,6 +49,7 @@ public class CozinhaControllerV2 {
         return cozinhasPagedModel;
     }
 
+    @Override
     @GetMapping("/{cozinhaId}")
     public CozinhaModelResponseV2 buscar(@PathVariable Long cozinhaId) {
         Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
@@ -55,6 +57,7 @@ public class CozinhaControllerV2 {
         return cozinhaModelResponseAssembler.toModel(cozinha);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CozinhaModelResponseV2 adicionar(@RequestBody @Valid CozinhaModelRequestV2 cozinhaModelRequest) {
@@ -65,6 +68,7 @@ public class CozinhaControllerV2 {
         return cozinhaModelResponseAssembler.toModel(cozinha);
     }
 
+    @Override
     @PutMapping("/{cozinhaId}")
     public CozinhaModelResponseV2 atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaModelRequestV2 cozinhaModelRequest) {
         Cozinha cozinhaAtual = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
@@ -76,6 +80,7 @@ public class CozinhaControllerV2 {
         return cozinhaModelResponseAssembler.toModel(cozinhaAtual);
     }
 
+    @Override
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long cozinhaId) {

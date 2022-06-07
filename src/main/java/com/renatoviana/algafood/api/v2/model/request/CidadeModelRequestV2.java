@@ -1,5 +1,6 @@
 package com.renatoviana.algafood.api.v2.model.request;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@ApiModel("CidadeModelRequest")
 @Setter
 @Getter
 public class CidadeModelRequestV2 {

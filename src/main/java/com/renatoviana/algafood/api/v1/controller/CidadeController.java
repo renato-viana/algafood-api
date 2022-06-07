@@ -75,7 +75,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 
     @Override
     @PutMapping("/{cidadeId}")
-    public CidadeModelResponse Atualizar(
+    public CidadeModelResponse atualizar(
             @PathVariable Long cidadeId,
             @RequestBody @Valid CidadeModelRequest cidadeModelRequest) {
 

@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.v2.model.request.CidadeModelRequestV2;
 import com.renatoviana.algafood.api.v2.model.response.CidadeModelResponseV2;
 import com.renatoviana.algafood.api.v2.modelmapper.assembler.CidadeModelResponseAssemblerV2;
 import com.renatoviana.algafood.api.v2.modelmapper.disassembler.CidadeModelRequestDisassemblerV2;
+import com.renatoviana.algafood.api.v2.openapi.controller.CidadeControllerV2OpenApi;
 import com.renatoviana.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
 import com.renatoviana.algafood.domain.model.Cidade;
@@ -21,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/v2/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CidadeControllerV2 {
+public class CidadeControllerV2 implements CidadeControllerV2OpenApi {
 
     @Autowired
     private CidadeRepository cidadeRepository;
@@ -42,6 +43,7 @@ public class CidadeControllerV2 {
         return cidadeModelResponseAssembler.toCollectionModel(cidades);
     }
 
+    @Override
     @GetMapping("/{cidadeId}")
     public CidadeModelResponseV2 buscar(
             @PathVariable Long cidadeId) {
@@ -50,6 +52,7 @@ public class CidadeControllerV2 {
         return cidadeModelResponseAssembler.toModel(cidade);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CidadeModelResponseV2 adicionar(
@@ -69,8 +72,9 @@ public class CidadeControllerV2 {
         }
     }
 
+    @Override
     @PutMapping("/{cidadeId}")
-    public CidadeModelResponseV2 Atualizar(
+    public CidadeModelResponseV2 atualizar(
             @PathVariable Long cidadeId,
             @RequestBody @Valid CidadeModelRequestV2 cidadeModelRequest) {
 
@@ -88,10 +92,12 @@ public class CidadeControllerV2 {
 
     }
 
+    @Override
     @DeleteMapping("/{cidadeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(
             @PathVariable Long cidadeId) {
         cadastroCidadeService.excluir(cidadeId);
     }
+
 }

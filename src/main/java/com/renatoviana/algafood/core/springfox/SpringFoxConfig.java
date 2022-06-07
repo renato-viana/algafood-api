@@ -4,6 +4,10 @@ import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.v1.model.response.*;
 import com.renatoviana.algafood.api.v1.openapi.model.*;
+import com.renatoviana.algafood.api.v2.model.response.CidadeModelResponseV2;
+import com.renatoviana.algafood.api.v2.model.response.CozinhaModelResponseV2;
+import com.renatoviana.algafood.api.v2.openapi.model.CidadesModelResponseV2OpenApi;
+import com.renatoviana.algafood.api.v2.openapi.model.CozinhasModelResponseV2OpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -92,7 +96,15 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                         Resource.class, File.class, InputStream.class)
                 .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelResponseOpenApi.class)
-                .apiInfo(apiInfoV2());
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(PagedModel.class, CozinhaModelResponseV2.class),
+                        CozinhasModelResponseV2OpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CidadeModelResponseV2.class),
+                        CidadesModelResponseV2OpenApi.class))
+                .apiInfo(apiInfoV2())
+                .tags(new Tag("Cidades", "Gerencia as cidades"),
+                        new Tag("Cozinhas", "Gerencia as cozinhas"));
     }
 
     private List<ResponseMessage> globalGetResponseMessages() {
