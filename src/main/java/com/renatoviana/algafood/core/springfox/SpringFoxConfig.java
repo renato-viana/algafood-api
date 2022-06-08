@@ -55,7 +55,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
     @Autowired
     private TypeResolver typeResolver;
 
-//    @Bean
+    @Bean
     public Docket apiDocketV1() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("V1")
@@ -216,10 +216,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
     public ApiInfo apiInfoV1() {
         return new ApiInfoBuilder()
-                .title("AlgaFood API (Depreciada)")
-                .description("API aberta para clientes e restaurantes.<br>"
-                        + "<strong>Essa versão da API está depreciada e deixará de existir a partir de 01/01/2023. "
-                        + "Use a versão mais atual da API.")
+                .title("AlgaFood API")
+                .description("API aberta para clientes e restaurantes")
                 .version("1")
                 .contact(new Contact(
                         "Renato Borges Viana",
