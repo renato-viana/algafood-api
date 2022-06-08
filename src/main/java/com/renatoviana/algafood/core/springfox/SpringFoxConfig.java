@@ -55,7 +55,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
     @Autowired
     private TypeResolver typeResolver;
 
-    @Bean
+//    @Bean
     public Docket apiDocketV1() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("V1")
