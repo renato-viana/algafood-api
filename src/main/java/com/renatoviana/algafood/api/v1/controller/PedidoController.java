@@ -10,6 +10,7 @@ import com.renatoviana.algafood.api.v1.modelmapper.disassembler.PedidoModelReque
 import com.renatoviana.algafood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.renatoviana.algafood.core.data.PageWrapper;
 import com.renatoviana.algafood.core.data.PageableTranslator;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
 import com.renatoviana.algafood.domain.filter.PedidoFilter;
@@ -52,6 +53,9 @@ public class PedidoController implements PedidoControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
+    @Autowired
+    private Security security;
+
     @GetMapping
     public PagedModel<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro,
                                                            @PageableDefault(size = 10) Pageable pageable) {
@@ -78,9 +82,8 @@ public class PedidoController implements PedidoControllerOpenApi {
         try {
             Pedido novoPedido = pedidoModelRequestDisassembler.toDomainObject(pedidoModelRequest);
 
-            // TODO pegar usuário autenticado
             novoPedido.setCliente(new Usuario());
-            novoPedido.getCliente().setId(1L);
+            novoPedido.getCliente().setId(security.getUsuarioId());
 
             novoPedido = emissaoPedidoService.emitir(novoPedido);
 
