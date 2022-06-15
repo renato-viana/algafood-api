@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.v1.model.response.CozinhaModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.CozinhaModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.modelmapper.disassembler.CozinhaModelRequestDisassembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.CozinhaControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.model.Cozinha;
 import com.renatoviana.algafood.domain.repository.CozinhaRepository;
 import com.renatoviana.algafood.domain.service.CadastroCozinhaService;
@@ -17,7 +18,6 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,7 +44,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecurity.Cozinhas.PodeConsultar
     @Override
     @GetMapping
     public PagedModel<CozinhaModelResponse> listar(@PageableDefault(size = 10) Pageable pageable) {
@@ -58,7 +58,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return cozinhasPagedModel;
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecurity.Cozinhas.PodeConsultar
     @Override
     @GetMapping("/{cozinhaId}")
     public CozinhaModelResponse buscar(@PathVariable Long cozinhaId) {
@@ -67,7 +67,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return cozinhaModelResponseAssembler.toModel(cozinha);
     }
 
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+    @CheckSecurity.Cozinhas.PodeEditar
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -79,6 +79,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return cozinhaModelResponseAssembler.toModel(cozinha);
     }
 
+    @CheckSecurity.Cozinhas.PodeEditar
     @Override
     @PutMapping("/{cozinhaId}")
     public CozinhaModelResponse atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaModelRequest cozinhaModelRequest) {
@@ -91,6 +92,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return cozinhaModelResponseAssembler.toModel(cozinhaAtual);
     }
 
+    @CheckSecurity.Cozinhas.PodeEditar
     @Override
     @DeleteMapping("/{cozinhaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
