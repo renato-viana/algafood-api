@@ -81,6 +81,7 @@ public class PedidoController implements PedidoControllerOpenApi {
         return pedidoModelResponseAssembler.toModel(pedido);
     }
 
+    @CheckSecurity.Pedidos.PodeCriar
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -110,4 +111,5 @@ public class PedidoController implements PedidoControllerOpenApi {
 
         return PageableTranslator.translate(apiPageable, mapeamento);
     }
+
 }
