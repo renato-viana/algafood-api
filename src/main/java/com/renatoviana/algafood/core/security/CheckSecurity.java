@@ -56,6 +56,13 @@ public @interface CheckSecurity {
         @Target(METHOD)
         public @interface PodeBuscar { }
 
+        @PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_PEDIDOS') or "
+                + "@security.getUsuarioId() == #filtro.clienteId or"
+                + "@security.gerenciaRestaurante(#filtro.restauranteId))")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        public @interface PodePesquisar { }
+
     }
 
 }

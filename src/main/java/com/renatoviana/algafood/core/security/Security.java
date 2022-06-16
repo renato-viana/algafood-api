@@ -24,8 +24,11 @@ public class Security {
     }
 
 
-    public boolean gerenciaRestaurante(Long resturanteId) {
-        return restauranteRepository.existsResponsavel(resturanteId, getUsuarioId());
+    public boolean gerenciaRestaurante(Long restauranteId) {
+        if (restauranteId == null) {
+            return false;
+        }
+        return restauranteRepository.existsResponsavel(restauranteId, getUsuarioId());
     }
 
 }

@@ -57,6 +57,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     @Autowired
     private Security security;
 
+    @CheckSecurity.Pedidos.PodePesquisar
     @Override
     @GetMapping
     public PagedModel<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro,
