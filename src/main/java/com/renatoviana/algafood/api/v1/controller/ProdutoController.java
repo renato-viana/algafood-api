@@ -71,7 +71,7 @@ public class ProdutoController implements ProdutoControllerOpenApi {
         return produtoModelResponseAssembler.toModel(produto);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -87,7 +87,7 @@ public class ProdutoController implements ProdutoControllerOpenApi {
         return produtoModelResponseAssembler.toModel(produto);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @Override
     @PutMapping("/{produtoId}")
     public ProdutoModelResponse atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,

@@ -92,7 +92,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
         }
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModelResponse atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
@@ -113,7 +113,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
         return fotoProdutoModelResponseAssembler.toModel(fotoSalva);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @Override
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

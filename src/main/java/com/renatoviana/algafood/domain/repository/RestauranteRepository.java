@@ -1,15 +1,14 @@
 package com.renatoviana.algafood.domain.repository;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
+import com.renatoviana.algafood.domain.model.Restaurante;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.renatoviana.algafood.domain.model.Restaurante;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RestauranteRepository
@@ -18,7 +17,7 @@ public interface RestauranteRepository
 
 	@Query("from Restaurante r join r.cozinha")
 	List<Restaurante> findAll();
-	
+
 	List<Restaurante> queryByTaxaFreteBetween(BigDecimal taxaInicial,
 			BigDecimal taxaFinal);
 
@@ -34,5 +33,7 @@ public interface RestauranteRepository
 	List<Restaurante> findTop2ByNomeContaining(String nome);
 
 	int countByCozinhaId(Long cozinhaId);
+
+	boolean existsResponsavel(Long restauranteId, Long usuarioId);
 
 }
