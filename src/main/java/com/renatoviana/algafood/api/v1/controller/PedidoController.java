@@ -10,6 +10,7 @@ import com.renatoviana.algafood.api.v1.modelmapper.disassembler.PedidoModelReque
 import com.renatoviana.algafood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.renatoviana.algafood.core.data.PageWrapper;
 import com.renatoviana.algafood.core.data.PageableTranslator;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.exception.NegocioException;
@@ -56,6 +57,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     @Autowired
     private Security security;
 
+    @Override
     @GetMapping
     public PagedModel<PedidoResumoModelResponse> pesquisar(PedidoFilter filtro,
                                                            @PageableDefault(size = 10) Pageable pageable) {
@@ -69,6 +71,8 @@ public class PedidoController implements PedidoControllerOpenApi {
         return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelResponseAssembler);
     }
 
+    @CheckSecurity.Pedidos.PodeBuscar
+    @Override
     @GetMapping("/{codigoPedido}")
     public PedidoModelResponse buscar(@PathVariable String codigoPedido) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
@@ -76,6 +80,7 @@ public class PedidoController implements PedidoControllerOpenApi {
         return pedidoModelResponseAssembler.toModel(pedido);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PedidoModelResponse adicionar(@Valid @RequestBody PedidoModelRequest pedidoModelRequest) {
