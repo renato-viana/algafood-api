@@ -6,6 +6,7 @@ import com.renatoviana.algafood.api.v1.model.response.ProdutoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.ProdutoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.modelmapper.disassembler.ProdutoModelRequestDisassembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.ProdutoControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.model.Produto;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.repository.ProdutoRepository;
@@ -42,6 +43,7 @@ public class ProdutoController implements ProdutoControllerOpenApi {
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @Override
     @GetMapping
     public CollectionModel<ProdutoModelResponse> listar(@PathVariable Long restauranteId, @RequestParam(required =
@@ -60,6 +62,7 @@ public class ProdutoController implements ProdutoControllerOpenApi {
                 .add(resourceLinkHelper.linkToProdutos(restauranteId));
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @Override
     @GetMapping("/{produtoId}")
     public ProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
@@ -68,6 +71,7 @@ public class ProdutoController implements ProdutoControllerOpenApi {
         return produtoModelResponseAssembler.toModel(produto);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -83,6 +87,7 @@ public class ProdutoController implements ProdutoControllerOpenApi {
         return produtoModelResponseAssembler.toModel(produto);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @Override
     @PutMapping("/{produtoId}")
     public ProdutoModelResponse atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,

@@ -20,7 +20,6 @@ public interface RestauranteControllerOpenApi {
             @ApiImplicitParam(value = "Nome da projeção de pedidos", allowableValues = "apenas-nome",
                     name = "projecao", paramType = "query", type = "string")
     })
-//    @JsonView(RestauranteView.Resumo.class)
     CollectionModel<RestauranteBasicoModelResponse> listar();
 
     @ApiIgnore

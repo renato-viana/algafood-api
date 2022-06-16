@@ -4,6 +4,7 @@ import com.renatoviana.algafood.api.v1.model.request.FotoProdutoModelRequest;
 import com.renatoviana.algafood.api.v1.model.response.FotoProdutoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.FotoProdutoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.ProdutoFotoControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.renatoviana.algafood.domain.model.FotoProduto;
 import com.renatoviana.algafood.domain.model.Produto;
@@ -41,6 +42,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
     @Autowired
     private FotoStorageService fotoStorageService;
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @Override
     @GetMapping
     public FotoProdutoModelResponse buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
@@ -90,6 +92,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public FotoProdutoModelResponse atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
@@ -110,6 +113,7 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
         return fotoProdutoModelResponseAssembler.toModel(fotoSalva);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @Override
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,21 +1,13 @@
 package com.renatoviana.algafood.domain.service;
 
-import java.util.List;
-
+import com.renatoviana.algafood.domain.exception.RestauranteNaoEncontradoException;
+import com.renatoviana.algafood.domain.model.*;
+import com.renatoviana.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.renatoviana.algafood.domain.exception.EntidadeEmUsoException;
-import com.renatoviana.algafood.domain.exception.RestauranteNaoEncontradoException;
-import com.renatoviana.algafood.domain.model.Cidade;
-import com.renatoviana.algafood.domain.model.Cozinha;
-import com.renatoviana.algafood.domain.model.FormaPagamento;
-import com.renatoviana.algafood.domain.model.Restaurante;
-import com.renatoviana.algafood.domain.model.Usuario;
-import com.renatoviana.algafood.domain.repository.RestauranteRepository;
+import java.util.List;
 
 @Service
 public class CadastroRestauranteService {
@@ -52,20 +44,6 @@ public class CadastroRestauranteService {
 		return restauranteRepository.save(restaurante);
 	}
 
-	@Transactional
-	public void excluir(Long restauranteId) {
-		try {
-			restauranteRepository.deleteById(restauranteId);
-			restauranteRepository.flush();
-			
-		} catch (EmptyResultDataAccessException e) {
-			throw new RestauranteNaoEncontradoException(restauranteId);
-
-		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO, restauranteId));
-		}
-	}
-	
 	@Transactional
 	public void ativar(Long restauranteId) {
 		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
