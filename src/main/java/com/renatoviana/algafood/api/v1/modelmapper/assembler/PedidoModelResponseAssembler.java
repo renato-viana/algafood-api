@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.PedidoController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.PedidoModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public PedidoModelResponseAssembler() {
         super(PedidoController.class, PedidoModelResponse.class);
     }
@@ -29,16 +33,18 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
 
         pedidoModelResponse.add(resourceLinkHelper.linkToPedidos("pedidos"));
 
-        if (pedido.podeSerConfirmado()) {
-            pedidoModelResponse.add(resourceLinkHelper.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
-        }
+        if (security.podeGerenciarPedidos(pedido.getCodigo())) {
+            if (pedido.podeSerConfirmado()) {
+                pedidoModelResponse.add(resourceLinkHelper.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+            }
 
-        if (pedido.podeSerEntregue()) {
-            pedidoModelResponse.add(resourceLinkHelper.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
-        }
+            if (pedido.podeSerEntregue()) {
+                pedidoModelResponse.add(resourceLinkHelper.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+            }
 
-        if (pedido.podeSerCancelado()) {
-            pedidoModelResponse.add(resourceLinkHelper.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+            if (pedido.podeSerCancelado()) {
+                pedidoModelResponse.add(resourceLinkHelper.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+            }
         }
 
         pedidoModelResponse
