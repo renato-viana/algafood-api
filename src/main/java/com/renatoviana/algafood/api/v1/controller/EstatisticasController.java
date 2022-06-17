@@ -2,6 +2,7 @@ package com.renatoviana.algafood.api.v1.controller;
 
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.openapi.controller.EstatisticasControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.filter.VendaDiariaFilter;
 import com.renatoviana.algafood.domain.model.dto.VendaDiaria;
 import com.renatoviana.algafood.domain.service.VendaJasperReportsService;
@@ -31,6 +32,7 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @CheckSecurity.Estatisticas.PodeConsultar
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public EstatisticasModelResponse estatisticas() {
@@ -41,6 +43,7 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
         return estatisticasModelResponse;
     }
 
+    @CheckSecurity.Estatisticas.PodeConsultar
     @Override
     @GetMapping(path = "vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
@@ -48,6 +51,7 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
         return vendaQueryService.consultarVendasDiarias(filtro, timeOffset);
     }
 
+    @CheckSecurity.Estatisticas.PodeConsultar
     @Override
     @GetMapping(path = "vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariaFilter filtro,
@@ -66,4 +70,5 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
 
     public static class EstatisticasModelResponse extends RepresentationModel<EstatisticasModelResponse> {
     }
+
 }
