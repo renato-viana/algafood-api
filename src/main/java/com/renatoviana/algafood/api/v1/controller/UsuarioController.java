@@ -7,6 +7,7 @@ import com.renatoviana.algafood.api.v1.model.response.UsuarioModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.UsuarioModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.modelmapper.disassembler.UsuarioModelRequestDisassembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.UsuarioControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.repository.UsuarioRepository;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
@@ -35,6 +36,8 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     @Autowired
     private UsuarioModelRequestDisassembler usuarioModelRequestDisassembler;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping
     public CollectionModel<UsuarioModelResponse> listar() {
         List<Usuario> usuarios = usuarioRepository.findAll();
@@ -42,6 +45,8 @@ public class UsuarioController implements UsuarioControllerOpenApi {
         return usuarioModelResponseAssembler.toCollectionModel(usuarios);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
+    @Override
     @GetMapping("/{usuarioId}")
     public UsuarioModelResponse buscar(@PathVariable Long usuarioId) {
         Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
@@ -49,31 +54,38 @@ public class UsuarioController implements UsuarioControllerOpenApi {
         return usuarioModelResponseAssembler.toModel(usuario);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioModelResponse adicionar(@RequestBody @Valid UsuarioComSenhaModelRequest usuarioInput) {
-        Usuario usuario = usuarioModelRequestDisassembler.toDomainObject(usuarioInput);
+    public UsuarioModelResponse adicionar(@RequestBody @Valid UsuarioComSenhaModelRequest usuarioModelRequest) {
+        Usuario usuario = usuarioModelRequestDisassembler.toDomainObject(usuarioModelRequest);
 
         usuario = cadastroUsuarioService.salvar(usuario);
 
         return usuarioModelResponseAssembler.toModel(usuario);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
+    @Override
     @PutMapping("/{usuarioId}")
-    public UsuarioModelResponse atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioModelRequest usuarioInput) {
+    public UsuarioModelResponse atualizar(@PathVariable Long usuarioId, @RequestBody @Valid UsuarioModelRequest usuarioModelRequest) {
 
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
-        usuarioModelRequestDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
+        usuarioModelRequestDisassembler.copyToDomainObject(usuarioModelRequest, usuarioAtual);
 
         usuarioAtual = cadastroUsuarioService.salvar(usuarioAtual);
 
         return usuarioModelResponseAssembler.toModel(usuarioAtual);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @Override
     @PutMapping("/{usuarioId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaModelRequest senha) {
         cadastroUsuarioService.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
     }
+
 }

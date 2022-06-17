@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.controller;
 import com.renatoviana.algafood.api.v1.model.response.PermissaoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.PermissaoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.PermissaoControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.model.Permissao;
 import com.renatoviana.algafood.domain.repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class PermissaoController implements PermissaoControllerOpenApi {
     @Autowired
     private PermissaoModelResponseAssembler permissaoModelResponseAssembler;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @Override
     @GetMapping
     public CollectionModel<PermissaoModelResponse> listar() {
@@ -31,4 +33,5 @@ public class PermissaoController implements PermissaoControllerOpenApi {
 
         return permissaoModelResponseAssembler.toCollectionModel(permissoes);
     }
+
 }        

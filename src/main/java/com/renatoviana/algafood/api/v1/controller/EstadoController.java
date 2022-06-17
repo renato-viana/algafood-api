@@ -56,8 +56,8 @@ public class EstadoController implements EstadoControllerOpenApi {
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EstadoModelResponse adicionar(@RequestBody @Valid EstadoModelRequest estadoInput) {
-        Estado estado = estadoModelRequestDisassembler.toDomainObject(estadoInput);
+    public EstadoModelResponse adicionar(@RequestBody @Valid EstadoModelRequest estadoModelRequest) {
+        Estado estado = estadoModelRequestDisassembler.toDomainObject(estadoModelRequest);
 
         estado = cadastroEstadoService.salvar(estado);
 
@@ -67,11 +67,11 @@ public class EstadoController implements EstadoControllerOpenApi {
     @CheckSecurity.Estados.PodeEditar
     @Override
     @PutMapping("/{estadoId}")
-    public EstadoModelResponse atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoModelRequest estadoInput) {
+    public EstadoModelResponse atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoModelRequest estadoModelRequest) {
 
         Estado estadoAtual = cadastroEstadoService.buscarOuFalhar(estadoId);
 
-        estadoModelRequestDisassembler.copyToDomainObject(estadoInput, estadoAtual);
+        estadoModelRequestDisassembler.copyToDomainObject(estadoModelRequest, estadoAtual);
 
         estadoAtual = cadastroEstadoService.salvar(estadoAtual);
 

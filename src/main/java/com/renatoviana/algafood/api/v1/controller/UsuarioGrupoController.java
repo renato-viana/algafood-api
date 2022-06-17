@@ -4,6 +4,7 @@ import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.GrupoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.GrupoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.UsuarioGrupoControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @Override
     @GetMapping
     public CollectionModel<GrupoModelResponse> listar(@PathVariable Long usuarioId) {
@@ -44,6 +46,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
         return grupoModelResponse;
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @Override
     @DeleteMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -53,6 +56,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @Override
     @PutMapping("/{grupoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -61,4 +65,5 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
         return ResponseEntity.noContent().build();
     }
+
 }

@@ -4,6 +4,7 @@ import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.PermissaoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.PermissaoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.GrupoPermissaoControllerOpenApi;
+import com.renatoviana.algafood.core.security.CheckSecurity;
 import com.renatoviana.algafood.domain.model.Grupo;
 import com.renatoviana.algafood.domain.service.CadastroGrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @Override
     @GetMapping
     public CollectionModel<PermissaoModelResponse> listar(@PathVariable Long grupoId) {
@@ -45,6 +47,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
         return permissoesModelResponse;
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @Override
     @DeleteMapping("/{permissaoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -54,6 +57,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @Override
     @PutMapping("/{permissaoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -62,4 +66,5 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 
         return ResponseEntity.noContent().build();
     }
+
 }
