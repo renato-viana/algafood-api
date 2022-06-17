@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.RestauranteController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.RestauranteBasicoModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class RestauranteBasicoModelResponseAssembler extends RepresentationModel
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public RestauranteBasicoModelResponseAssembler() {
         super(RestauranteController.class, RestauranteBasicoModelResponse.class);
     }
@@ -32,14 +36,14 @@ public class RestauranteBasicoModelResponseAssembler extends RepresentationModel
 
         modelMapper.map(restaurante, restauranteModelResponse);
 
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestaurantes("restaurantes"));
+        if (security.podeConsultarRestaurantes()) {
+            restauranteModelResponse.add(resourceLinkHelper.linkToRestaurantes("restaurantes"));
+        }
 
-        restauranteModelResponse
-                .getCozinha().add(
-                        resourceLinkHelper
-                                .linkToCozinha(restaurante.getCozinha().getId()));
+        if (security.podeConsultarCozinhas()) {
+            restauranteModelResponse.getCozinha().add(
+                    resourceLinkHelper.linkToCozinha(restaurante.getCozinha().getId()));
+        }
 
         return restauranteModelResponse;
     }
@@ -47,9 +51,13 @@ public class RestauranteBasicoModelResponseAssembler extends RepresentationModel
     @Override
     public CollectionModel<RestauranteBasicoModelResponse>
     toCollectionModel(Iterable<? extends Restaurante> entities) {
-        return super.toCollectionModel(entities)
-                .add(resourceLinkHelper
-                        .linkToRestaurantes());
+        CollectionModel<RestauranteBasicoModelResponse> collectionModelResponse = super.toCollectionModel(entities);
+
+        if (security.podeConsultarRestaurantes()) {
+            collectionModelResponse.add(resourceLinkHelper.linkToRestaurantes());
+        }
+
+        return collectionModelResponse;
     }
 
 }

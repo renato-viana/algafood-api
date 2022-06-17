@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.v1.model.response.GrupoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.GrupoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.UsuarioGrupoControllerOpenApi;
 import com.renatoviana.algafood.core.security.CheckSecurity;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Usuario;
 import com.renatoviana.algafood.domain.service.CadastroUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @Override
     @GetMapping
@@ -35,13 +39,16 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
         CollectionModel<GrupoModelResponse> grupoModelResponse =
                 grupoModelResponseAssembler.toCollectionModel(usuario.getGrupos())
-                        .removeLinks()
-                        .add(resourceLinkHelper.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+                        .removeLinks();
 
-        grupoModelResponse.getContent().forEach(grupoModel -> {
-            grupoModel.add(resourceLinkHelper.linkToUsuarioGrupoDesassociacao(
-                    usuarioId, grupoModel.getId(), "desassociar"));
-        });
+        if (security.podeEditarUsuariosGruposPermissoes()) {
+            grupoModelResponse.add(resourceLinkHelper.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+
+            grupoModelResponse.getContent().forEach(grupoModel -> {
+                grupoModel.add(resourceLinkHelper.linkToUsuarioGrupoDesassociacao(
+                        usuarioId, grupoModel.getId(), "desassociar"));
+            });
+        }
 
         return grupoModelResponse;
     }

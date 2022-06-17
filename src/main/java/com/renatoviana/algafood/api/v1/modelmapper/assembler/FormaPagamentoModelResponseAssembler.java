@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.FormaPagamentoController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.FormaPagamentoModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.FormaPagamento;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class FormaPagamentoModelResponseAssembler
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public FormaPagamentoModelResponseAssembler() {
         super(FormaPagamentoController.class, FormaPagamentoModelResponse.class);
     }
@@ -31,15 +35,22 @@ public class FormaPagamentoModelResponseAssembler
 
         modelMapper.map(formaPagamento, formaPagamentoModelResponse);
 
-        formaPagamentoModelResponse.add(resourceLinkHelper.linkToFormasPagamento("formasPagamento"));
+        if (security.podeConsultarFormasPagamento()) {
+            formaPagamentoModelResponse.add(resourceLinkHelper.linkToFormasPagamento("formasPagamento"));
+        }
 
         return formaPagamentoModelResponse;
     }
 
     @Override
     public CollectionModel<FormaPagamentoModelResponse> toCollectionModel(Iterable<? extends FormaPagamento> entities) {
-        return super.toCollectionModel(entities)
-                .add(resourceLinkHelper.linkToFormasPagamento());
+        CollectionModel<FormaPagamentoModelResponse> collectionModelResponse = super.toCollectionModel(entities);
+
+        if (security.podeConsultarFormasPagamento()) {
+            collectionModelResponse.add(resourceLinkHelper.linkToFormasPagamento());
+        }
+
+        return collectionModelResponse;
     }
 
 }

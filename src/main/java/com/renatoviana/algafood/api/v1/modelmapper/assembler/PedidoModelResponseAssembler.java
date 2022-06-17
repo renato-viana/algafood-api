@@ -31,7 +31,9 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
         PedidoModelResponse pedidoModelResponse = createModelWithId(pedido.getCodigo(), pedido);
         modelMapper.map(pedido, pedidoModelResponse);
 
-        pedidoModelResponse.add(resourceLinkHelper.linkToPedidos("pedidos"));
+        if (security.podePesquisarPedidos()) {
+            pedidoModelResponse.add(resourceLinkHelper.linkToPedidos("pedidos"));
+        }
 
         if (security.podeGerenciarPedidos(pedido.getCodigo())) {
             if (pedido.podeSerConfirmado()) {
@@ -47,34 +49,41 @@ public class PedidoModelResponseAssembler extends RepresentationModelAssemblerSu
             }
         }
 
-        pedidoModelResponse
-                .getRestaurante().add(
-                        resourceLinkHelper
-                                .linkToRestaurante(pedido.getRestaurante().getId()));
+        if (security.podeConsultarRestaurantes()) {
+            pedidoModelResponse.getRestaurante().add(
+                            resourceLinkHelper.linkToRestaurante(pedido.getRestaurante().getId()));
+        }
 
-        pedidoModelResponse
-                .getCliente().add(
-                        resourceLinkHelper
-                                .linkToUsuario(pedido.getCliente().getId()));
+        if (security.podeConsultarUsuariosGruposPermissoes()) {
+            pedidoModelResponse
+                    .getCliente().add(
+                            resourceLinkHelper.linkToUsuario(pedido.getCliente().getId()));
+        }
 
-        pedidoModelResponse
-                .getFormaPagamento().add(
-                        resourceLinkHelper
-                                .linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+        if (security.podeConsultarFormasPagamento()) {
+            pedidoModelResponse
+                    .getFormaPagamento().add(
+                            resourceLinkHelper.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
 
-        pedidoModelResponse
-                .getEnderecoEntrega().getCidade().add(
-                        resourceLinkHelper
-                                .linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        }
 
-        pedidoModelResponse
-                .getItens().forEach(item -> {
-                    item.add(resourceLinkHelper
-                            .linkToProduto(
-                                    pedidoModelResponse
-                                            .getRestaurante().getId(), item.getProdutoId(), "produto"));
-                });
+        if (security.podeConsultarCidades()) {
+            pedidoModelResponse
+                    .getEnderecoEntrega().getCidade().add(
+                            resourceLinkHelper.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        }
 
+        // Quem pode consultar restaurantes, também pode consultar os produtos dos restaurantes
+        if (security.podeConsultarRestaurantes()) {
+            pedidoModelResponse
+                    .getItens().forEach(item -> {
+                        item.add(resourceLinkHelper
+                                .linkToProduto(
+                                        pedidoModelResponse
+                                                .getRestaurante().getId(), item.getProdutoId(), "produto"));
+                    });
+        }
+        
         return pedidoModelResponse;
     }
 

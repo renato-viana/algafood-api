@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.EstadoController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.EstadoModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Estado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class EstadoModelResponseAssembler extends RepresentationModelAssemblerSu
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public EstadoModelResponseAssembler() {
         super(EstadoController.class, EstadoModelResponse.class);
     }
@@ -28,14 +32,21 @@ public class EstadoModelResponseAssembler extends RepresentationModelAssemblerSu
         EstadoModelResponse estadoModelResponse = createModelWithId(estado.getId(), estado);
         modelMapper.map(estado, estadoModelResponse);
 
-        estadoModelResponse.add(resourceLinkHelper.linkToEstados("estados"));
+        if (security.podeConsultarEstados()) {
+            estadoModelResponse.add(resourceLinkHelper.linkToEstados("estados"));
+        }
 
         return estadoModelResponse;
     }
 
     @Override
     public CollectionModel<EstadoModelResponse> toCollectionModel(Iterable<? extends Estado> entities) {
-        return super.toCollectionModel(entities)
-                .add(resourceLinkHelper.linkToEstados());
+        CollectionModel<EstadoModelResponse> collectionModelResponse = super.toCollectionModel(entities);
+
+        if (security.podeConsultarEstados()) {
+            collectionModelResponse.add(resourceLinkHelper.linkToEstados());
+        }
+
+        return collectionModelResponse;
     }
 }

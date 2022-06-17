@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.v1.model.response.PermissaoModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.PermissaoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.renatoviana.algafood.core.security.CheckSecurity;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Grupo;
 import com.renatoviana.algafood.domain.service.CadastroGrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @Override
     @GetMapping
@@ -35,14 +39,18 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 
         CollectionModel<PermissaoModelResponse> permissoesModelResponse
                 = permissaoModelResponseAssembler.toCollectionModel(grupo.getPermissoes())
-                .removeLinks()
-                .add(resourceLinkHelper.linkToGrupoPermissoes(grupoId))
-                .add(resourceLinkHelper.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+                .removeLinks();
 
-        permissoesModelResponse.getContent().forEach(permissaoModel ->
-                permissaoModel.add(resourceLinkHelper.linkToGrupoPermissaoDesassociacao(
-                        grupoId, permissaoModel.getId(), "desassociar"))
-        );
+        permissoesModelResponse.add(resourceLinkHelper.linkToGrupoPermissoes(grupoId));
+
+        if (security.podeEditarUsuariosGruposPermissoes()) {
+            permissoesModelResponse.add(resourceLinkHelper.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+
+            permissoesModelResponse.getContent().forEach(permissaoModel ->
+                    permissaoModel.add(resourceLinkHelper.linkToGrupoPermissaoDesassociacao(
+                            grupoId, permissaoModel.getId(), "desassociar"))
+            );
+        }
 
         return permissoesModelResponse;
     }

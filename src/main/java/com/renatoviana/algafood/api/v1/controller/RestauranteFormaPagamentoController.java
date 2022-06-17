@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.v1.model.response.FormaPagamentoModelRespons
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.FormaPagamentoModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.renatoviana.algafood.core.security.CheckSecurity;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.Restaurantes.PodeConsultar
     @Override
     @GetMapping
@@ -35,16 +39,21 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 
         CollectionModel<FormaPagamentoModelResponse> formasPagamentoModelResponse =
                 formaPagamentoModelResponseAssembler.toCollectionModel(restaurante.getFormasPagamento())
-                        .removeLinks()
-                        .add(resourceLinkHelper.linkToRestauranteFormasPagamento(restauranteId))
-                        .add(resourceLinkHelper.linkToRestauranteFormaPagamentoAssociacao(restauranteId, "associar"));
+                        .removeLinks();
 
-        formasPagamentoModelResponse.getContent().forEach(
-                formaPagamentoModelResponse -> formaPagamentoModelResponse.add(
-                        resourceLinkHelper
-                                .linkToRestauranteFormaPagamentoDesassociacao(
-                                        restauranteId, formaPagamentoModelResponse.getId(), "desassociar"))
-        );
+        formasPagamentoModelResponse.add(resourceLinkHelper.linkToRestauranteFormasPagamento(restauranteId));
+
+        if (security.podeGerenciarFuncionamentoRestaurantes(restauranteId)) {
+            formasPagamentoModelResponse.add(
+                    resourceLinkHelper.linkToRestauranteFormaPagamentoAssociacao(restauranteId, "associar"));
+
+            formasPagamentoModelResponse.getContent().forEach(
+                    formaPagamentoModelResponse -> formaPagamentoModelResponse.add(
+                            resourceLinkHelper
+                                    .linkToRestauranteFormaPagamentoDesassociacao(
+                                            restauranteId, formaPagamentoModelResponse.getId(), "desassociar"))
+            );
+        }
 
         return formasPagamentoModelResponse;
     }

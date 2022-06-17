@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.CidadeController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.CidadeModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Cidade;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class CidadeModelResponseAssembler extends RepresentationModelAssemblerSu
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public CidadeModelResponseAssembler() {
         super(CidadeController.class, CidadeModelResponse.class);
     }
@@ -29,16 +33,26 @@ public class CidadeModelResponseAssembler extends RepresentationModelAssemblerSu
 
         modelMapper.map(cidade, cidadeModelResponse);
 
-        cidadeModelResponse.add(resourceLinkHelper.linkToCidades("cidades"));
+        if (security.podeConsultarCidades()) {
+            cidadeModelResponse.add(resourceLinkHelper.linkToCidades("cidades"));
+        }
 
-        cidadeModelResponse.getEstado().add(resourceLinkHelper.linkToEstado(cidadeModelResponse.getEstado().getId()));
+        if (security.podeConsultarEstados()) {
+            cidadeModelResponse.getEstado().add(resourceLinkHelper.linkToEstado(cidadeModelResponse.getEstado().getId()));
+        }
 
         return cidadeModelResponse;
     }
 
     @Override
     public CollectionModel<CidadeModelResponse> toCollectionModel(Iterable<? extends Cidade> entities) {
-        return super.toCollectionModel(entities)
-                .add(resourceLinkHelper.linkToCidades());
+        CollectionModel<CidadeModelResponse> collectionModelResponse = super.toCollectionModel(entities);
+
+        if (security.podeConsultarCidades()) {
+            collectionModelResponse.add(resourceLinkHelper.linkToCidades());
+        }
+
+        return collectionModelResponse;
     }
+
 }

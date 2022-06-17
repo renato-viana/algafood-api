@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.RestauranteController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.RestauranteApenasNomeModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class RestauranteApenasNomeModelResponseAssembler extends RepresentationM
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public RestauranteApenasNomeModelResponseAssembler() {
         super(RestauranteController.class, RestauranteApenasNomeModelResponse.class);
     }
@@ -30,9 +34,9 @@ public class RestauranteApenasNomeModelResponseAssembler extends RepresentationM
 
         modelMapper.map(restaurante, restauranteModelResponse);
 
-        restauranteModelResponse
-                .add(resourceLinkHelper
-                        .linkToRestaurantes("restaurantes"));
+        if (security.podeConsultarRestaurantes()) {
+            restauranteModelResponse.add(resourceLinkHelper.linkToRestaurantes("restaurantes"));
+        }
 
         return restauranteModelResponse;
     }
@@ -40,9 +44,13 @@ public class RestauranteApenasNomeModelResponseAssembler extends RepresentationM
     @Override
     public CollectionModel<RestauranteApenasNomeModelResponse>
     toCollectionModel(Iterable<? extends Restaurante> entities) {
-        return super.toCollectionModel(entities)
-                .add(resourceLinkHelper.
-                        linkToRestaurantes());
+        CollectionModel<RestauranteApenasNomeModelResponse> collectionModelResponse = super.toCollectionModel(entities);
+
+        if (security.podeConsultarRestaurantes()) {
+            collectionModelResponse.add(resourceLinkHelper.linkToRestaurantes());
+        }
+
+        return collectionModelResponse;
     }
 
 }

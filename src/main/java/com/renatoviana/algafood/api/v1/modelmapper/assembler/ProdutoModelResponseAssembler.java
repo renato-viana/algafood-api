@@ -3,6 +3,7 @@ package com.renatoviana.algafood.api.v1.modelmapper.assembler;
 import com.renatoviana.algafood.api.v1.controller.ProdutoController;
 import com.renatoviana.algafood.api.v1.helper.ResourceLinkHelper;
 import com.renatoviana.algafood.api.v1.model.response.ProdutoModelResponse;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Produto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class ProdutoModelResponseAssembler extends RepresentationModelAssemblerS
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     public ProdutoModelResponseAssembler() {
         super(ProdutoController.class, ProdutoModelResponse.class);
     }
@@ -29,10 +33,12 @@ public class ProdutoModelResponseAssembler extends RepresentationModelAssemblerS
 
         modelMapper.map(produto, produtoModelResponse);
 
-        produtoModelResponse.add(resourceLinkHelper.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
+        if (security.podeConsultarRestaurantes()) {
+            produtoModelResponse.add(resourceLinkHelper.linkToProdutos(produto.getRestaurante().getId(), "produtos"));
 
-        produtoModelResponse.add(resourceLinkHelper.linkToFotoProduto(
-                produto.getRestaurante().getId(), produto.getId(), "foto"));
+            produtoModelResponse.add(resourceLinkHelper.linkToFotoProduto(
+                    produto.getRestaurante().getId(), produto.getId(), "foto"));
+        }
 
         return produtoModelResponse;
     }

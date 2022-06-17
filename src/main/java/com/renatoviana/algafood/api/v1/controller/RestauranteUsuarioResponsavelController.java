@@ -5,6 +5,7 @@ import com.renatoviana.algafood.api.v1.model.response.UsuarioModelResponse;
 import com.renatoviana.algafood.api.v1.modelmapper.assembler.UsuarioModelResponseAssembler;
 import com.renatoviana.algafood.api.v1.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
 import com.renatoviana.algafood.core.security.CheckSecurity;
+import com.renatoviana.algafood.core.security.Security;
 import com.renatoviana.algafood.domain.model.Restaurante;
 import com.renatoviana.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     @Autowired
     private ResourceLinkHelper resourceLinkHelper;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.Restaurantes.PodeConsultar
     @Override
     @GetMapping
@@ -35,14 +39,19 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
 
         CollectionModel<UsuarioModelResponse> usuariosModelResponse =
                 usuarioModelResponseAssembler.toCollectionModel(restaurante.getResponsaveis())
-                        .removeLinks()
-                        .add(resourceLinkHelper.linkToResponsaveisRestaurante(restauranteId))
-                        .add(resourceLinkHelper.linkToRestauranteResponsavelAssociacao(restauranteId, "associar"));
+                        .removeLinks();
 
-        usuariosModelResponse.getContent().forEach(usuarioModelResponse -> {
-            usuarioModelResponse.add(resourceLinkHelper.linkToRestauranteResponsavelDesassociacao(
-                    restauranteId, usuarioModelResponse.getId(), "desassociar"));
-        });
+        usuariosModelResponse.add(resourceLinkHelper.linkToResponsaveisRestaurante(restauranteId));
+
+        if (security.podeGerenciarCadastroRestaurantes()) {
+            usuariosModelResponse.add(
+                    resourceLinkHelper.linkToRestauranteResponsavelAssociacao(restauranteId, "associar"));
+
+            usuariosModelResponse.getContent().forEach(usuarioModelResponse -> {
+                usuarioModelResponse.add(resourceLinkHelper.linkToRestauranteResponsavelDesassociacao(
+                        restauranteId, usuarioModelResponse.getId(), "desassociar"));
+            });
+        }
 
         return usuariosModelResponse;
     }
