@@ -192,7 +192,7 @@ insert into oauth_client_details (
 values (
   'food-analytics', null, '$2a$12$INrpO5okQvqtemM4xZ.SSOtCBPR7lwOobePq8j6.l0aVP5UefeSxe',
   'READ,WRITE', 'authorization_code', 'http://www.foodanalytics.local:8082', null,
-  null, null, null
+  null, null, false
 );
 
 insert into oauth_client_details (
