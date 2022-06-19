@@ -4,10 +4,6 @@ import com.fasterxml.classmate.TypeResolver;
 import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.v1.model.response.*;
 import com.renatoviana.algafood.api.v1.openapi.model.*;
-import com.renatoviana.algafood.api.v2.model.response.CidadeModelResponseV2;
-import com.renatoviana.algafood.api.v2.model.response.CozinhaModelResponseV2;
-import com.renatoviana.algafood.api.v2.openapi.model.CidadesModelResponseV2OpenApi;
-import com.renatoviana.algafood.api.v2.openapi.model.CozinhasModelResponseV2OpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,18 +20,13 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.builders.*;
 import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.schema.ModelRef;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.ResponseMessage;
-import springfox.documentation.service.Tag;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -74,37 +65,39 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelResponseOpenApi.class)
                 .alternateTypeRules(rules())
+                .securitySchemes(List.of(securityScheme()))
+                .securityContexts(List.of(securityContext()))
                 .apiInfo(apiInfoV1())
                 .tags(tags()[0], tags());
     }
 
-    @Bean
-    public Docket apiDocketV2() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("V2")
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.renatoviana.algafood.api"))
-                .paths(PathSelectors.ant("/v2/**"))
-                .build()
-                .useDefaultResponseMessages(false)
-                .globalResponseMessage(RequestMethod.GET, globalGetResponseMessages())
-                .globalResponseMessage(RequestMethod.POST, globalPostPutResponseMessages())
-                .globalResponseMessage(RequestMethod.PUT, globalPostPutResponseMessages())
-                .globalResponseMessage(RequestMethod.DELETE, globalDeleteResponseMessages())
-                .additionalModels(typeResolver.resolve(Problem.class))
-                .ignoredParameterTypes(ServletWebRequest.class, URL.class, URI.class, URLStreamHandler.class,
-                        Resource.class, File.class, InputStream.class)
-                .directModelSubstitute(Pageable.class, PageableModelResponseOpenApi.class)
-                .directModelSubstitute(Links.class, LinksModelResponseOpenApi.class)
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(PagedModel.class, CozinhaModelResponseV2.class),
-                        CozinhasModelResponseV2OpenApi.class))
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(CollectionModel.class, CidadeModelResponseV2.class),
-                        CidadesModelResponseV2OpenApi.class))
-                .apiInfo(apiInfoV2())
-                .tags(new Tag("Cidades", "Gerencia as cidades"),
-                        new Tag("Cozinhas", "Gerencia as cozinhas"));
+    private SecurityScheme securityScheme() {
+        return new OAuthBuilder()
+                .name("AlgaFood")
+                .grantTypes(grantTypes())
+                .scopes(scopes())
+                .build();
+    }
+
+    private SecurityContext securityContext() {
+        var securityReference = SecurityReference.builder()
+                .reference("AlgaFood")
+                .scopes(scopes().toArray(new AuthorizationScope[0]))
+                .build();
+
+        return SecurityContext.builder()
+                .securityReferences(List.of(securityReference))
+                .forPaths(PathSelectors.any())
+                .build();
+    }
+
+    private List<GrantType> grantTypes() {
+        return List.of(new ResourceOwnerPasswordCredentialsGrant("/oauth/token"));
+    }
+
+    private List<AuthorizationScope> scopes() {
+        return List.of(new AuthorizationScope("READ", "Acesso de leitura"),
+                new AuthorizationScope("WRITE", "Acesso de escrita"));
     }
 
     private List<ResponseMessage> globalGetResponseMessages() {
@@ -226,18 +219,6 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .build();
     }
 
-    public ApiInfo apiInfoV2() {
-        return new ApiInfoBuilder()
-                .title("AlgaFood API")
-                .description("API aberta para clientes e restaurantes")
-                .version("2")
-                .contact(new Contact(
-                        "Renato Borges Viana",
-                        "https://github.com/renato-viana/algafood-api.git",
-                        "renatoviana30@gmail.com"))
-                .build();
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
@@ -247,4 +228,5 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
     }
+
 }

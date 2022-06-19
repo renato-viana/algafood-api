@@ -2,8 +2,6 @@ package com.renatoviana.algafood.core.modelmapper;
 
 import com.renatoviana.algafood.api.v1.model.request.ItemPedidoModelRequest;
 import com.renatoviana.algafood.api.v1.model.response.EnderecoModelResponse;
-import com.renatoviana.algafood.api.v2.model.request.CidadeModelRequestV2;
-import com.renatoviana.algafood.domain.model.Cidade;
 import com.renatoviana.algafood.domain.model.Endereco;
 import com.renatoviana.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
@@ -16,9 +14,6 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         var modelMapper = new ModelMapper();
-
-        modelMapper.createTypeMap(CidadeModelRequestV2.class, Cidade.class)
-                .addMappings(mapper -> mapper.skip(Cidade::setId));
 
         modelMapper.createTypeMap(ItemPedidoModelRequest.class, ItemPedido.class)
                 .addMappings(mapper -> mapper.skip(ItemPedido::setId));
