@@ -85,12 +85,12 @@ public @interface CheckSecurity {
 
     }
 
-    public @interface Cidades {
+    @interface Cidades {
 
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_CIDADES')")
         @Retention(RUNTIME)
         @Target(METHOD)
-        public @interface PodeEditar { }
+        @interface PodeEditar { }
 
         @PreAuthorize("@security.podeConsultarCidades()")
         @Retention(RUNTIME)

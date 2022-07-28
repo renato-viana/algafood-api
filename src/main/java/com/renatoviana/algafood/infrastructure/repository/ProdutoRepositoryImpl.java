@@ -1,4 +1,4 @@
-package com.renatoviana.algafood.infrastructure.repository.spec;
+package com.renatoviana.algafood.infrastructure.repository;
 
 import com.renatoviana.algafood.domain.model.FotoProduto;
 import com.renatoviana.algafood.domain.repository.ProdutoRepositoryQueries;

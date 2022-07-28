@@ -16,5 +16,4 @@ public class VendaDiaria {
     private Long totalVendas;
     private BigDecimal totalFaturado;
 
-
 }
