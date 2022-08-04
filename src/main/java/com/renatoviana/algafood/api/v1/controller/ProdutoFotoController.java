@@ -95,15 +95,17 @@ public class ProdutoFotoController implements ProdutoFotoControllerOpenApi {
     @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public FotoProdutoModelResponse atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-                                                  @Valid FotoProdutoModelRequest fotoProdutoInput,
-                                                  @RequestPart(required = true) MultipartFile arquivo) throws IOException {
+    public FotoProdutoModelResponse atualizarFoto(@PathVariable Long restauranteId,
+                                                  @PathVariable Long produtoId,
+                                                  @Valid FotoProdutoModelRequest fotoProdutoModelRequest) throws IOException {
 
         Produto produto = cadastroProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
+        MultipartFile arquivo = fotoProdutoModelRequest.getArquivo();
+
         FotoProduto foto = new FotoProduto();
         foto.setProduto(produto);
-        foto.setDescricao(fotoProdutoInput.getDescricao());
+        foto.setDescricao(fotoProdutoModelRequest.getDescricao());
         foto.setContentType(arquivo.getContentType());
         foto.setTamanho(arquivo.getSize());
         foto.setNomeArquivo(arquivo.getOriginalFilename());

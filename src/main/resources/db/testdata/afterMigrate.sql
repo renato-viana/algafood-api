@@ -186,7 +186,7 @@ insert into oauth_client_details (
 )
 values (
   'algafood-web', null, '$2a$12$ATB4bGb3wzLkKU552Nhs4e74pJAH3gtfeMeiwQEtGK4GkaluO.tpC',
-  'READ,WRITE', 'password', null, null,
+  'READ,WRITE', 'password,authorization_code', 'http://localhost:8080,http://localhost:8080/swagger-ui/oauth2-redirect.html', null,
   304167, null, null
 );
 

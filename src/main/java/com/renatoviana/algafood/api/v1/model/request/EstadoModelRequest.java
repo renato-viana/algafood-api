@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class EstadoModelRequest {
 
-	@ApiModelProperty(example = "Minas Gerais", required = true)
+	@Schema(example = "Minas Gerais", required = true)
 	@NotBlank
 	private String nome;
 

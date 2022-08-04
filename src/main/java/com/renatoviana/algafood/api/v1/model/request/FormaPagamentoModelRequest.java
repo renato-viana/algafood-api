@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class FormaPagamentoModelRequest {
 
-	@ApiModelProperty(example = "Cartão de crédito", required = true)
+	@Schema(example = "Cartão de crédito", required = true)
 	@NotBlank
 	private String descricao;
 

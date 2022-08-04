@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,22 +12,22 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class EnderecoModelRequest {
 
-    @ApiModelProperty(example = "38400-000", required = true)
+    @Schema(example = "38400-000", required = true)
     @NotBlank
     private String cep;
 
-    @ApiModelProperty(example = "Rua Floriano Peixoto", required = true)
+    @Schema(example = "Rua Floriano Peixoto", required = true)
     @NotBlank
     private String logradouro;
 
-    @ApiModelProperty(example = "1500", required = true)
+    @Schema(example = "1500", required = true)
     @NotBlank
     private String numero;
 
-    @ApiModelProperty(example = "Apto 901")
+    @Schema(example = "Apto 901")
     private String complemento;
 
-    @ApiModelProperty(example = "Centro", required = true)
+    @Schema(example = "Centro", required = true)
     @NotBlank
     private String bairro;
 

@@ -1,64 +1,60 @@
 package com.renatoviana.algafood.api.v1.openapi.controller;
 
-import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.v1.model.request.ProdutoModelRequest;
 import com.renatoviana.algafood.api.v1.model.response.ProdutoModelResponse;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 
-@Api(tags = "Produtos")
+@Tag(name = "Produtos")
+@SecurityRequirement(name = "security_auth")
 public interface ProdutoControllerOpenApi {
 
-    @ApiOperation("Lista os produtos de um restaurante")
-    @ApiResponses({
-            @ApiResponse(code = 400, message = "ID do restaurante inválido", response = Problem.class),
-            @ApiResponse(code = 404, message = "Restaurante não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Lista os produtos de um restaurante",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "400", description = "ID do restaurante inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Restaurante não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     CollectionModel<ProdutoModelResponse> listar(
-            @ApiParam(value = "ID do restaurante", example = "1", required = true)
-                    Long restauranteId,
+            @Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId,
+            @Parameter(description = "Indica se deve ou não incluir produtos inativos no resultado da listagem",
+                    example = "false", required = false) Boolean incluirInativos
+    );
 
-            @ApiParam(value = "Indica se deve ou não incluir produtos inativos no resultado da listagem",
-                    example = "false", defaultValue = "false")
-                    Boolean incluirInativos);
-
-    @ApiOperation("Busca um produto de um restaurante")
-    @ApiResponses({
-            @ApiResponse(code = 400, message = "ID do restaurante ou produto inválido", response = Problem.class),
-            @ApiResponse(code = 404, message = "Produto de restaurante não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Busca um produto de um restaurante",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "400", description = "ID do restaurante ou produto inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Produto de restaurante não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     ProdutoModelResponse buscar(
-            @ApiParam(value = "ID do restaurante", example = "1", required = true)
-                    Long restauranteId,
+            @Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId,
+            @Parameter(description = "ID do produto", example = "1", required = true) Long produtoId);
 
-            @ApiParam(value = "ID do produto", example = "1", required = true)
-                    Long produtoId);
-
-    @ApiOperation("Cadastra um produto de um restaurante")
-    @ApiResponses({
-            @ApiResponse(code = 201, message = "Produto cadastrado"),
-            @ApiResponse(code = 404, message = "Restaurante não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Cadastra um produto de um restaurante",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Produto cadastrado"),
+                    @ApiResponse(responseCode = "404", description = "Restaurante não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     ProdutoModelResponse adicionar(
-            @ApiParam(value = "ID do restaurante", example = "1", required = true)
-                    Long restauranteId,
+            @Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId,
+            @RequestBody(description = "Representação de um novo produto", required = true) ProdutoModelRequest produtoModelRequest);
 
-            @ApiParam(name = "corpo", value = "Representação de um novo produto", required = true)
-                    ProdutoModelRequest produtoModelRequest);
-
-    @ApiOperation("Atualiza um produto de um restaurante")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Produto atualizado"),
-            @ApiResponse(code = 404, message = "Produto de restaurante não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Atualiza um produto de um restaurante",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Produto atualizado"),
+                    @ApiResponse(responseCode = "404", description = "Produto de restaurante não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     ProdutoModelResponse atualizar(
-            @ApiParam(value = "ID do restaurante", example = "1", required = true)
-                    Long restauranteId,
+            @Parameter(description = "ID do restaurante", example = "1", required = true) Long restauranteId,
+            @Parameter(description = "ID do produto", example = "1", required = true) Long produtoId,
+            @RequestBody(description = "Representação de um produto com os novos dados", required = true) ProdutoModelRequest produtoModelRequest);
 
-            @ApiParam(value = "ID do produto", example = "1", required = true)
-                    Long produtoId,
-
-            @ApiParam(name = "corpo", value = "Representação de um produto com os novos dados",
-                    required = true)
-                    ProdutoModelRequest produtoModelRequest);
 }

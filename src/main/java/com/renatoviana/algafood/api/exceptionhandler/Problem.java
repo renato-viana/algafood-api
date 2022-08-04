@@ -1,54 +1,50 @@
 package com.renatoviana.algafood.api.exceptionhandler;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-@ApiModel("Problema")
+import java.time.OffsetDateTime;
+import java.util.List;
+
+@Schema(name = "Problema")
 @JsonInclude(Include.NON_NULL)
 @Getter
 @Builder
 public class Problem {
 
-    @ApiModelProperty(example = "400", position = 1)
+    @Schema(example = "400")
     private Integer status;
 
-    @ApiModelProperty(example = "2022-04-20T12:09:46.175634Z", position = 5)
+    @Schema(example = "2022-04-20T12:09:46.175634Z")
     private OffsetDateTime timestamp;
 
-    @ApiModelProperty(example = "https://algafood.com.br/dados-invalidos", position = 10)
+    @Schema(example = "https://algafood.com.br/dados-invalidos")
     private String type;
 
-    @ApiModelProperty(example = "Dados inválidos", position = 15)
+    @Schema(example = "Dados inválidos")
     private String title;
 
-    @ApiModelProperty(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.",
-            position = 20)
+    @Schema(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.")
     private String detail;
 
-    @ApiModelProperty(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente."
-            , position = 25)
+    @Schema(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.")
     private String userMessage;
 
-    @ApiModelProperty(value = "Lista de objetos ou campos que geraram o erro (opcional)", position = 30)
+    @Schema(description = "Lista de objetos ou campos que geraram o erro (opcional)")
     private List<Object> objects;
 
-    @ApiModel("ObjetoProblema")
+    @Schema(name = "ObjetoProblema")
     @Getter
     @Builder
     public static class Object {
 
-        @ApiModelProperty(example = "preço")
+        @Schema(example = "preço")
         private String name;
 
-        @ApiModelProperty(example = "Preço do produto é obrigatório")
+        @Schema(example = "Preço do produto é obrigatório")
         private String userMessage;
 
     }

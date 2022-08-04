@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.response;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.persistence.Embeddable;
@@ -9,20 +9,20 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class EnderecoModelResponse {
 
-	@ApiModelProperty(example = "38400-000")
-	private String cep;
+    @Schema(example = "38400-000")
+    private String cep;
 
-	@ApiModelProperty(example = "Rua Floriano Peixoto")
-	private String logradouro;
+    @Schema(example = "Rua Floriano Peixoto")
+    private String logradouro;
 
-	@ApiModelProperty(example = "1500")
-	private String numero;
+    @Schema(example = "1500")
+    private String numero;
 
-	@ApiModelProperty(example = "Apto 901")
-	private String complemento;
+    @Schema(example = "Apto 901")
+    private String complemento;
 
-	@ApiModelProperty(example = "Centro")
-	private String bairro;
+    @Schema(example = "Centro")
+    private String bairro;
 
-	private CidadeResumoModelResponse cidade;
+    private CidadeResumoModelResponse cidade;
 }

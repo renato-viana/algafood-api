@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.response;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -11,13 +11,13 @@ import org.springframework.hateoas.server.core.Relation;
 @Getter
 public class PermissaoModelResponse extends RepresentationModel<PermissaoModelResponse> {
 
-    @ApiModelProperty(example = "1")
+    @Schema(example = "1")
     private Long id;
 
-    @ApiModelProperty(example = "CONSULTAR_COZINHAS")
+    @Schema(example = "CONSULTAR_COZINHAS")
     private String nome;
 
-    @ApiModelProperty(example = "Permite consultar cozinhas")
+    @Schema(example = "Permite consultar cozinhas")
     private String descricao;
 
 }

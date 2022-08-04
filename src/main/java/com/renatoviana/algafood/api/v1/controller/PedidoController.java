@@ -1,6 +1,5 @@
 package com.renatoviana.algafood.api.v1.controller;
 
-import com.google.common.collect.ImmutableMap;
 import com.renatoviana.algafood.api.v1.model.request.PedidoModelRequest;
 import com.renatoviana.algafood.api.v1.model.response.PedidoModelResponse;
 import com.renatoviana.algafood.api.v1.model.response.PedidoResumoModelResponse;
@@ -31,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/v1/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,7 +101,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     }
 
     private Pageable traduzirPageable(Pageable apiPageable) {
-        var mapeamento = ImmutableMap.of(
+        var mapeamento = Map.of(
                 "codigo", "codigo",
                 "restaurante.nome", "restaurante.nome",
                 "nomeCliente", "cliente.nome",

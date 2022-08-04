@@ -1,59 +1,65 @@
 package com.renatoviana.algafood.api.v1.openapi.controller;
 
-import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.v1.model.request.SenhaModelRequest;
 import com.renatoviana.algafood.api.v1.model.request.UsuarioComSenhaModelRequest;
 import com.renatoviana.algafood.api.v1.model.request.UsuarioModelRequest;
 import com.renatoviana.algafood.api.v1.model.response.UsuarioModelResponse;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 
-@Api(tags = "Usuários")
+@Tag(name = "Usuários")
+@SecurityRequirement(name = "security_auth")
 public interface UsuarioControllerOpenApi {
 
-    @ApiOperation("Lista os usuários")
+    @Operation(summary = "Lista os usuários")
     CollectionModel<UsuarioModelResponse> listar();
 
-    @ApiOperation("Busca um usuário por ID")
-    @ApiResponses({
-            @ApiResponse(code = 400, message = "ID do usuário inválido", response = Problem.class),
-            @ApiResponse(code = 404, message = "Usuário não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Busca um usuário por ID",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "400", description = "ID do usuário inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     UsuarioModelResponse buscar(
-            @ApiParam(value = "ID do usuário", example = "1", required = true)
+            @Parameter(description = "ID do usuário", example = "1", required = true)
                     Long usuarioId);
 
-    @ApiOperation("Cadastra um usuário")
-    @ApiResponses({
-            @ApiResponse(code = 201, message = "Usuário cadastrado"),
-    })
+    @Operation(summary = "Cadastra um usuário",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Usuário cadastrado"),
+            })
     UsuarioModelResponse adicionar(
-            @ApiParam(name = "corpo", value = "Representação de um novo usuário", required = true)
+            @RequestBody(description = "Representação de um novo usuário", required = true)
                     UsuarioComSenhaModelRequest usuarioComSenhaModelRequest);
 
-    @ApiOperation("Atualiza um usuário por ID")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Usuário atualizado"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Atualiza um usuário por ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário atualizado"),
+                    @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     UsuarioModelResponse atualizar(
-            @ApiParam(value = "ID do usuário", example = "1", required = true)
+            @Parameter(description = "ID do usuário", example = "1", required = true)
                     Long usuarioId,
 
-            @ApiParam(name = "corpo", value = "Representação de um usuário com os novos dados",
+            @RequestBody(description = "Representação de um usuário com os novos dados",
                     required = true)
                     UsuarioModelRequest usuarioModelRequest);
 
-    @ApiOperation("Atualiza a senha de um usuário")
-    @ApiResponses({
-            @ApiResponse(code = 204, message = "Senha alterada com sucesso"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Atualiza a senha de um usuário",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Senha alterada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     void alterarSenha(
-            @ApiParam(value = "ID do usuário", example = "1", required = true)
-                    Long usuarioId,
+            @Parameter(description = "ID do usuário", example = "1", required = true) Long usuarioId,
+            @RequestBody(description = "Representação de uma nova senha", required = true) SenhaModelRequest senha
+    );
 
-            @ApiParam(name = "corpo", value = "Representação de uma nova senha",
-                    required = true)
-                    SenhaModelRequest senha);
 }

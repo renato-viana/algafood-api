@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.response;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -13,15 +13,15 @@ import java.math.BigDecimal;
 @Getter
 public class RestauranteModelResponse extends RepresentationModel<RestauranteModelResponse> {
 
-    @ApiModelProperty(example = "1")
+    @Schema(example = "1")
 //    @JsonView({ RestauranteView.Resumo.class, RestauranteView.ApenasNome.class })
     private Long id;
 
-    @ApiModelProperty(example = "Thai Gourmet")
+    @Schema(example = "Thai Gourmet")
 //    @JsonView({ RestauranteView.Resumo.class, RestauranteView.ApenasNome.class })
     private String nome;
 
-    @ApiModelProperty(example = "12.00")
+    @Schema(example = "12.00")
 //    @JsonView(RestauranteView.Resumo.class)
     private BigDecimal taxaFrete;
 

@@ -1,53 +1,56 @@
 package com.renatoviana.algafood.api.v1.openapi.controller;
 
-import com.renatoviana.algafood.api.exceptionhandler.Problem;
 import com.renatoviana.algafood.api.v1.model.request.GrupoModelRequest;
 import com.renatoviana.algafood.api.v1.model.response.GrupoModelResponse;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 
-@Api(tags = "Grupos")
+@Tag(name = "Grupos")
+@SecurityRequirement(name = "security_auth")
 public interface GrupoControllerOpenApi {
 
-    @ApiOperation("Lista os grupos")
+    @Operation(summary = "Lista os grupos")
     CollectionModel<GrupoModelResponse> listar();
 
-    @ApiOperation("Busca um grupo por ID")
-    @ApiResponses({
-            @ApiResponse(code = 400, message = "ID da grupo inválido", response = Problem.class),
-            @ApiResponse(code = 404, message = "Grupo não encontrado", response = Problem.class)
-    })
-    GrupoModelResponse buscar(
-            @ApiParam(value = "ID de um grupo", example = "1", required = true)
-                    Long grupoId);
+    @Operation(summary = "Busca um grupo por ID",
+            responses = {
+                    @ApiResponse(responseCode = "400", description = "ID da grupo inválido", content = @Content(schema = @Schema(ref = "Problema"))),
+                    @ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
+    GrupoModelResponse buscar(@Parameter(description = "ID de um grupo", example = "1", required = true) Long grupoId);
 
-    @ApiOperation("Cadastra um grupo")
-    @ApiResponses({
-            @ApiResponse(code = 201, message = "Grupo cadastrado"),
-    })
+    @Operation(summary = "Cadastra um grupo",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Grupo cadastrado"),
+            })
     GrupoModelResponse adicionar(
-            @ApiParam(name = "corpo", value = "Representação de um novo grupo", required = true)
-                    GrupoModelRequest grupoInput);
+            @RequestBody(description = "Representação de um novo grupo", required = true)
+                    GrupoModelRequest grupoModelRequest);
 
-    @ApiOperation("Atualiza um grupo por ID")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Grupo atualizado"),
-            @ApiResponse(code = 404, message = "Grupo não encontrado", response = Problem.class)
-    })
+    @Operation(summary = "Atualiza um grupo por ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Grupo atualizado"),
+                    @ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
     GrupoModelResponse atualizar(
-            @ApiParam(value = "ID de um grupo", example = "1", required = true)
+            @Parameter(description = "ID de um grupo", example = "1", required = true)
                     Long grupoId,
 
-            @ApiParam(name = "corpo", value = "Representação de um grupo com os novos dados", required = true)
-                    GrupoModelRequest grupoInput);
+            @RequestBody(description = "Representação de um grupo com os novos dados", required = true)
+                    GrupoModelRequest grupoModelRequest);
 
-    @ApiOperation("Exclui um grupo por ID")
-    @ApiResponses({
-            @ApiResponse(code = 204, message = "Grupo excluído"),
-            @ApiResponse(code = 404, message = "Grupo não encontrado", response = Problem.class)
-    })
-    void remover(
-            @ApiParam(value = "ID de um grupo", example = "1", required = true)
-                    Long grupoId);
+    @Operation(summary = "Exclui um grupo por ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Grupo excluído"),
+                    @ApiResponse(responseCode = "404", description = "Grupo não encontrado", content = @Content(schema = @Schema(ref = "Problema")))
+            })
+    void remover(@Parameter(description = "ID de um grupo", example = "1", required = true) Long grupoId);
 
 }

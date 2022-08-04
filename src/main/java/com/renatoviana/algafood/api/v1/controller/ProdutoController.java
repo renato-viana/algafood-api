@@ -76,10 +76,10 @@ public class ProdutoController implements ProdutoControllerOpenApi {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProdutoModelResponse adicionar(@PathVariable Long restauranteId,
-                                          @RequestBody @Valid ProdutoModelRequest produtoInput) {
+                                          @RequestBody @Valid ProdutoModelRequest ProdutoModelRequest) {
         Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
-        Produto produto = produtoModelRequestDisassembler.toDomainObject(produtoInput);
+        Produto produto = produtoModelRequestDisassembler.toDomainObject(ProdutoModelRequest);
         produto.setRestaurante(restaurante);
 
         produto = cadastroProduto.salvar(produto);
@@ -91,13 +91,14 @@ public class ProdutoController implements ProdutoControllerOpenApi {
     @Override
     @PutMapping("/{produtoId}")
     public ProdutoModelResponse atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-                                          @RequestBody @Valid ProdutoModelRequest produtoInput) {
+                                          @RequestBody @Valid ProdutoModelRequest ProdutoModelRequest) {
         Produto produtoAtual = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
 
-        produtoModelRequestDisassembler.copyToDomainObject(produtoInput, produtoAtual);
+        produtoModelRequestDisassembler.copyToDomainObject(ProdutoModelRequest, produtoAtual);
 
         produtoAtual = cadastroProduto.salvar(produtoAtual);
 
         return produtoModelResponseAssembler.toModel(produtoAtual);
     }
+
 }   

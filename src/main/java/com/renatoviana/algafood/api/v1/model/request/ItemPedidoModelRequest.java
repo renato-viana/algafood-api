@@ -1,6 +1,6 @@
 package com.renatoviana.algafood.api.v1.model.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,15 +11,16 @@ import javax.validation.constraints.PositiveOrZero;
 @Getter
 public class ItemPedidoModelRequest {
 
-    @ApiModelProperty(example = "1", required = true)
+    @Schema(example = "1", required = true)
     @NotNull
     private Long produtoId;
 
-    @ApiModelProperty(example = "2", required = true)
+    @Schema(example = "2", required = true)
     @NotNull
     @PositiveOrZero
     private Integer quantidade;
 
-    @ApiModelProperty(example = "Menos picante, por favor")
+    @Schema(example = "Menos picante, por favor")
     private String observacao;
+
 }

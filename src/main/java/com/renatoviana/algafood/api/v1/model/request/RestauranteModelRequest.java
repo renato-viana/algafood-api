@@ -1,25 +1,24 @@
 package com.renatoviana.algafood.api.v1.model.request;
 
-import java.math.BigDecimal;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
 
 @Setter
 @Getter
 public class RestauranteModelRequest {
 
-    @ApiModelProperty(example = "Thai Gourmet", required = true)
+    @Schema(example = "Thai Gourmet", required = true)
     @NotBlank
     private String nome;
 
-    @ApiModelProperty(example = "12.00", required = true)
+    @Schema(example = "12.00", required = true)
     @NotNull
     @PositiveOrZero
     private BigDecimal taxaFrete;
