@@ -35,7 +35,7 @@ Este projeto faz parte do curso "Especialista Spring REST", no qual você aprend
 - Implantação em Contêineres Docker na Amazon
 - Documentação da API com SpringDoc
 - Spring Authorization Server
-- Spring Boot 3 (Talvez um espaço reservado?)
+- Spring Boot 3
 
 ## Começando
 
